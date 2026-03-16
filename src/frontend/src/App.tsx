@@ -132,9 +132,6 @@ export default function App() {
   }
 
   // Not approved → pending screen
-  // Users are always already pending at this point because saveCallerUserProfile
-  // automatically calls requestApproval on the backend. No need for the user to
-  // manually request access again — show the pending state directly.
   if (!isApproved) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
@@ -161,6 +158,7 @@ export default function App() {
         <Dashboard
           onNavigate={(p) => handleNavigate(p as NavPage)}
           onChapterClick={(id) => setPage({ name: "chapter", chapterId: id })}
+          userName={profile?.name ?? ""}
         />
       )}
       {page.name === "learning" && (

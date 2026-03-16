@@ -10,6 +10,7 @@ import { motion } from "motion/react";
 interface DashboardProps {
   onNavigate: (page: "dashboard" | "learning" | "interview" | "hr") => void;
   onChapterClick: (id: number) => void;
+  userName?: string;
 }
 
 const chapterBadgeColors = [
@@ -30,6 +31,7 @@ const chapterBadgeColors = [
 export default function Dashboard({
   onNavigate,
   onChapterClick,
+  userName,
 }: DashboardProps) {
   const { completedCount, isComplete } = useProgress();
   const total = chapters.length;
@@ -72,12 +74,27 @@ export default function Dashboard({
           <div className="relative z-10 max-w-xl">
             <div className="flex items-center gap-2 mb-3">
               <Zap className="h-4 w-4 text-cyan-400" />
-              <p className="text-cyan-300 text-sm font-semibold uppercase tracking-widest">
-                Welcome to
-              </p>
+              {userName ? (
+                <p className="text-cyan-300 text-sm font-semibold uppercase tracking-widest">
+                  Hello, {userName}
+                </p>
+              ) : (
+                <p className="text-cyan-300 text-sm font-semibold uppercase tracking-widest">
+                  Welcome to
+                </p>
+              )}
             </div>
             <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-3 leading-tight">
-              Zyntho
+              {userName ? (
+                <>
+                  Welcome to{" "}
+                  <span className="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">
+                    Zyntho
+                  </span>
+                </>
+              ) : (
+                "Zyntho"
+              )}
             </h1>
             <p className="text-blue-200 text-lg leading-relaxed">
               Your guide to IT &amp; Customer Support careers.{" "}
