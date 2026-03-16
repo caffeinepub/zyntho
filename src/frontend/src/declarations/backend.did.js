@@ -22,10 +22,7 @@ export const InterviewQuestion = IDL.Record({
   'question' : IDL.Text,
   'answer' : IDL.Text,
 });
-export const TimelineEntry = IDL.Record({
-  'day' : IDL.Nat,
-  'activity' : IDL.Text,
-});
+export const TimelineEntry = IDL.Record({ 'day' : IDL.Nat, 'activity' : IDL.Text });
 export const InterviewPrepContent = IDL.Record({
   'jobRole' : IDL.Text,
   'questions' : IDL.Vec(InterviewQuestion),
@@ -35,18 +32,38 @@ export const Content = IDL.Record({
   'interviewPrepContent' : IDL.Vec(InterviewPrepContent),
   'chapters' : IDL.Vec(Chapter),
 });
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const ApprovalStatus = IDL.Variant({
+  'approved' : IDL.Null,
+  'rejected' : IDL.Null,
+  'pending' : IDL.Null,
+});
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
+export const UserApprovalInfo = IDL.Record({
+  'principal' : IDL.Principal,
+  'status' : ApprovalStatus,
+});
 
 export const idlService = IDL.Service({
   'getChapterById' : IDL.Func([IDL.Nat], [Chapter], ['query']),
   'getChapters' : IDL.Func([], [IDL.Vec(Chapter)], ['query']),
-  'getInterviewPrepContent' : IDL.Func(
-      [IDL.Text],
-      [InterviewPrepContent],
-      ['query'],
-    ),
+  'getInterviewPrepContent' : IDL.Func([IDL.Text], [InterviewPrepContent], ['query']),
   'isTopicComplete' : IDL.Func([IDL.Nat], [IDL.Bool], ['query']),
   'markTopicComplete' : IDL.Func([IDL.Nat], [], []),
   'seedContent' : IDL.Func([Content], [], []),
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'isCallerApproved' : IDL.Func([], [IDL.Bool], ['query']),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'getAllUserApprovals' : IDL.Func([], [IDL.Vec(UserApprovalInfo)], ['query']),
+  'approveUser' : IDL.Func([IDL.Principal], [], []),
+  'rejectUser' : IDL.Func([IDL.Principal], [], []),
 });
 
 export const idlInitArgs = [];
@@ -76,18 +93,38 @@ export const idlFactory = ({ IDL }) => {
     'interviewPrepContent' : IDL.Vec(InterviewPrepContent),
     'chapters' : IDL.Vec(Chapter),
   });
-  
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const ApprovalStatus = IDL.Variant({
+    'approved' : IDL.Null,
+    'rejected' : IDL.Null,
+    'pending' : IDL.Null,
+  });
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
+  const UserApprovalInfo = IDL.Record({
+    'principal' : IDL.Principal,
+    'status' : ApprovalStatus,
+  });
+
   return IDL.Service({
     'getChapterById' : IDL.Func([IDL.Nat], [Chapter], ['query']),
     'getChapters' : IDL.Func([], [IDL.Vec(Chapter)], ['query']),
-    'getInterviewPrepContent' : IDL.Func(
-        [IDL.Text],
-        [InterviewPrepContent],
-        ['query'],
-      ),
+    'getInterviewPrepContent' : IDL.Func([IDL.Text], [InterviewPrepContent], ['query']),
     'isTopicComplete' : IDL.Func([IDL.Nat], [IDL.Bool], ['query']),
     'markTopicComplete' : IDL.Func([IDL.Nat], [], []),
     'seedContent' : IDL.Func([Content], [], []),
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'isCallerApproved' : IDL.Func([], [IDL.Bool], ['query']),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'getAllUserApprovals' : IDL.Func([], [IDL.Vec(UserApprovalInfo)], ['query']),
+    'approveUser' : IDL.Func([IDL.Principal], [], []),
+    'rejectUser' : IDL.Func([IDL.Principal], [], []),
   });
 };
 

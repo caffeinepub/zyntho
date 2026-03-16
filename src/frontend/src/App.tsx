@@ -131,7 +131,10 @@ export default function App() {
     );
   }
 
-  // Not approved → request/pending screen
+  // Not approved → pending screen
+  // Users are always already pending at this point because saveCallerUserProfile
+  // automatically calls requestApproval on the backend. No need for the user to
+  // manually request access again — show the pending state directly.
   if (!isApproved) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
@@ -141,7 +144,7 @@ export default function App() {
           showFullNav={false}
         />
         <RequestAccessPage
-          alreadyRequested={false}
+          alreadyRequested={true}
           userName={profile?.name ?? "there"}
         />
         <Toaster />

@@ -2,7 +2,9 @@ import Map "mo:core/Map";
 import Principal "mo:core/Principal";
 import Set "mo:core/Set";
 import Runtime "mo:core/Runtime";
-import Iter "mo:core/Iter";
+import Prim "mo:prim";
+import AccessControl "./authorization/access-control";
+import Approval "./user-approval/approval";
 
 actor {
   type Content = {
@@ -38,66 +40,177 @@ actor {
     activity : Text;
   };
 
+  type UserProfile = {
+    name : Text;
+  };
+
+  type AdminUserApprovalInfo = {
+    user : Principal;
+    status : Approval.ApprovalStatus;
+    name : ?Text;
+  };
+
   var content : ?Content = null;
   let userProgress = Map.empty<Principal, Set.Set<Nat>>();
+  let accessControlState = AccessControl.initState();
+  let approvalState = Approval.initState(accessControlState);
+  let userProfiles = Map.empty<Principal, UserProfile>();
 
-  // Admin function to seed platform data (idempotent: silently skips if already seeded)
+  // Internal helper: returns true only if the caller is approved OR is admin
+  func isAuthorizedCaller(caller : Principal) : Bool {
+    if (caller.isAnonymous()) { return false };
+    if (AccessControl.isAdmin(accessControlState, caller)) { return true };
+    Approval.isApproved(approvalState, caller);
+  };
+
+  public shared ({ caller }) func _initializeAccessControlWithSecret(userSecret : Text) : async () {
+    switch (Prim.envVar<system>("CAFFEINE_ADMIN_TOKEN")) {
+      case (null) { Runtime.trap("CAFFEINE_ADMIN_TOKEN not set") };
+      case (?adminToken) {
+        AccessControl.initialize(accessControlState, caller, adminToken, userSecret);
+        Approval.setApproval(approvalState, caller, #approved);
+      };
+    };
+  };
+
+  public query ({ caller }) func getCallerUserRole() : async AccessControl.UserRole {
+    if (caller.isAnonymous()) { return #guest };
+    switch (accessControlState.userRoles.get(caller)) {
+      case (?role) { role };
+      case (null) { #guest };
+    };
+  };
+
+  public query ({ caller }) func isCallerAdmin() : async Bool {
+    AccessControl.isAdmin(accessControlState, caller);
+  };
+
+  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
+    if (caller.isAnonymous()) { Runtime.trap("Anonymous users cannot save profiles") };
+    userProfiles.add(caller, profile);
+    switch (accessControlState.userRoles.get(caller)) {
+      case (null) { accessControlState.userRoles.add(caller, #user) };
+      case (?_) {};
+    };
+    // Only set pending if no approval status exists yet.
+    // Never auto-approve: pending users must wait for admin action.
+    if (approvalState.approvalStatus.get(caller) == null) {
+      Approval.setApproval(approvalState, caller, #pending);
+    };
+  };
+
+  public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
+    userProfiles.get(caller);
+  };
+
+  public query ({ caller }) func isCallerApproved() : async Bool {
+    if (caller.isAnonymous()) { return false };
+    // Admin always counts as approved
+    if (AccessControl.isAdmin(accessControlState, caller)) { return true };
+    // For everyone else, must be explicitly #approved — pending/rejected/missing = false
+    switch (approvalState.approvalStatus.get(caller)) {
+      case (?#approved) { true };
+      case (_) { false };
+    };
+  };
+
+  public shared ({ caller }) func requestApproval() : async () {
+    if (caller.isAnonymous()) { Runtime.trap("Anonymous users cannot request approval") };
+    if (approvalState.approvalStatus.get(caller) == null) {
+      Approval.setApproval(approvalState, caller, #pending);
+    };
+  };
+
+  public query ({ caller }) func getAllUserApprovals() : async [AdminUserApprovalInfo] {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized");
+    };
+    approvalState.approvalStatus.entries().map(
+      func((principal, status)) : AdminUserApprovalInfo {
+        let name = switch (userProfiles.get(principal)) {
+          case (?p) { ?p.name };
+          case (null) { null };
+        };
+        { user = principal; status; name };
+      }
+    ).toArray();
+  };
+
+  public shared ({ caller }) func approveUser(user : Principal) : async () {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized");
+    };
+    Approval.setApproval(approvalState, user, #approved);
+  };
+
+  public shared ({ caller }) func rejectUser(user : Principal) : async () {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized");
+    };
+    Approval.setApproval(approvalState, user, #rejected);
+  };
+
   public shared ({ caller }) func seedContent(newContent : Content) : async () {
     if (content == null) {
       content := ?newContent;
     };
   };
 
-  // Get all chapters (returns [] if not yet seeded)
+  // Content endpoints are gated: only admin or approved users can read content.
   public query ({ caller }) func getChapters() : async [Chapter] {
+    if (not isAuthorizedCaller(caller)) {
+      Runtime.trap("Access denied: awaiting admin approval");
+    };
     switch (content) {
       case (null) { [] };
-      case (?content) { content.chapters };
+      case (?c) { c.chapters };
     };
   };
 
-  // Get chapter by id
   public query ({ caller }) func getChapterById(id : Nat) : async Chapter {
+    if (not isAuthorizedCaller(caller)) {
+      Runtime.trap("Access denied: awaiting admin approval");
+    };
     switch (content) {
       case (null) { Runtime.trap("Content not seeded") };
-      case (?content) {
-        let chapters = content.chapters.values();
-        switch (chapters.find(func(chapter) { chapter.id == id })) {
+      case (?c) {
+        switch (c.chapters.values().find(func(ch) { ch.id == id })) {
           case (null) { Runtime.trap("Chapter not found") };
-          case (?chapter) { chapter };
+          case (?ch) { ch };
         };
       };
     };
   };
 
-  // Mark topic as complete for current user
   public shared ({ caller }) func markTopicComplete(topicId : Nat) : async () {
-    let currentProgress = switch (userProgress.get(caller)) {
-      case (null) { Set.empty<Nat>() };
-      case (?progress) { progress };
+    if (not isAuthorizedCaller(caller)) {
+      Runtime.trap("Access denied: awaiting admin approval");
     };
-
-    currentProgress.add(topicId);
-    userProgress.add(caller, currentProgress);
+    let current = switch (userProgress.get(caller)) {
+      case (null) { Set.empty<Nat>() };
+      case (?p) { p };
+    };
+    current.add(topicId);
+    userProgress.add(caller, current);
   };
 
-  // Check if topic is complete for current user
   public query ({ caller }) func isTopicComplete(topicId : Nat) : async Bool {
     switch (userProgress.get(caller)) {
       case (null) { false };
-      case (?progress) { progress.contains(topicId) };
+      case (?p) { p.contains(topicId) };
     };
   };
 
-  // Get interview prep content by job role
   public query ({ caller }) func getInterviewPrepContent(jobRole : Text) : async InterviewPrepContent {
+    if (not isAuthorizedCaller(caller)) {
+      Runtime.trap("Access denied: awaiting admin approval");
+    };
     switch (content) {
       case (null) { Runtime.trap("Content not seeded") };
-      case (?content) {
-        let contentIter = content.interviewPrepContent.values();
-        switch (contentIter.find(func(interviewContent) { interviewContent.jobRole == jobRole })) {
-          case (null) { Runtime.trap("Interview prep content not found") };
-          case (?interviewContent) { interviewContent };
+      case (?c) {
+        switch (c.interviewPrepContent.values().find(func(ic) { ic.jobRole == jobRole })) {
+          case (null) { Runtime.trap("Interview prep not found") };
+          case (?ic) { ic };
         };
       };
     };

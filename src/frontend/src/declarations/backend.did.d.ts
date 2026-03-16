@@ -27,6 +27,13 @@ export interface InterviewPrepContent {
 export interface InterviewQuestion { 'question' : string, 'answer' : string }
 export interface TimelineEntry { 'day' : bigint, 'activity' : string }
 export interface Topic { 'id' : bigint, 'title' : string, 'notes' : string }
+export interface UserProfile { 'name' : string }
+export type ApprovalStatus = { 'approved' : null } | { 'rejected' : null } | { 'pending' : null };
+export type UserRole = { 'admin' : null } | { 'user' : null } | { 'guest' : null };
+export interface UserApprovalInfo {
+  'principal' : Principal,
+  'status' : ApprovalStatus,
+}
 export interface _SERVICE {
   'getChapterById' : ActorMethod<[bigint], Chapter>,
   'getChapters' : ActorMethod<[], Array<Chapter>>,
@@ -34,6 +41,15 @@ export interface _SERVICE {
   'isTopicComplete' : ActorMethod<[bigint], boolean>,
   'markTopicComplete' : ActorMethod<[bigint], undefined>,
   'seedContent' : ActorMethod<[Content], undefined>,
+  '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'isCallerApproved' : ActorMethod<[], boolean>,
+  'isCallerAdmin' : ActorMethod<[], boolean>,
+  'getAllUserApprovals' : ActorMethod<[], Array<UserApprovalInfo>>,
+  'approveUser' : ActorMethod<[Principal], undefined>,
+  'rejectUser' : ActorMethod<[Principal], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

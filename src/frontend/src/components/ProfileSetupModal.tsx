@@ -19,13 +19,24 @@ interface ProfileSetupModalProps {
 }
 
 export default function ProfileSetupModal({ open }: ProfileSetupModalProps) {
-  const { actor } = useActor();
+  const { actor, isFetching } = useActor();
   const invalidateAuth = useInvalidateAuth();
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    if (!name.trim() || !actor) return;
+    if (!name.trim()) return;
+
+    // If actor is not ready yet, wait briefly and retry once
+    if (!actor) {
+      if (isFetching) {
+        toast.info("Still connecting, please try again in a moment.");
+      } else {
+        toast.error("Connection not ready. Please refresh and try again.");
+      }
+      return;
+    }
+
     setSaving(true);
     try {
       await (actor as any).saveCallerUserProfile({ name: name.trim() });
@@ -37,6 +48,8 @@ export default function ProfileSetupModal({ open }: ProfileSetupModalProps) {
       setSaving(false);
     }
   };
+
+  const isConnecting = isFetching && !actor;
 
   return (
     <Dialog open={open}>
@@ -71,6 +84,22 @@ export default function ProfileSetupModal({ open }: ProfileSetupModalProps) {
         </DialogHeader>
 
         <div className="flex flex-col gap-4 pt-2">
+          {isConnecting && (
+            <div
+              className="flex items-center gap-2 text-sm px-3 py-2 rounded-md"
+              style={{ background: "oklch(0.18 0.04 260)" }}
+              data-ocid="profile.loading_state"
+            >
+              <Loader2
+                className="h-4 w-4 animate-spin"
+                style={{ color: "oklch(0.62 0.22 270)" }}
+              />
+              <span className="text-muted-foreground">
+                Connecting to backend…
+              </span>
+            </div>
+          )}
+
           <div className="flex flex-col gap-2">
             <Label htmlFor="profile-name" className="text-sm font-medium">
               Your name
@@ -89,7 +118,7 @@ export default function ProfileSetupModal({ open }: ProfileSetupModalProps) {
           <Button
             data-ocid="profile.submit_button"
             onClick={handleSave}
-            disabled={!name.trim() || saving}
+            disabled={!name.trim() || saving || isConnecting}
             className="w-full font-semibold"
             style={{
               background:
@@ -100,6 +129,11 @@ export default function ProfileSetupModal({ open }: ProfileSetupModalProps) {
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
+              </>
+            ) : isConnecting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Connecting...
               </>
             ) : (
               "Continue"

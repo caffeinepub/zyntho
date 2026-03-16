@@ -16,12 +16,30 @@ import { useActor } from "../hooks/useActor";
 
 type StatusKind = "Approved" | "Pending" | "Rejected";
 
+// Handles all Motoko variant serialization formats:
+// { pending: null }, { approved: null }, { rejected: null }
+// { __kind__: "pending" }, or plain strings
 function extractStatus(status: unknown): StatusKind {
   if (!status) return "Pending";
-  if (typeof status === "object" && "__kind__" in (status as object)) {
-    return (status as { __kind__: string }).__kind__ as StatusKind;
+  if (typeof status === "object" && status !== null) {
+    const obj = status as Record<string, unknown>;
+    // Motoko variant format: { approved: null }, { pending: null }, { rejected: null }
+    if ("approved" in obj || "Approved" in obj) return "Approved";
+    if ("rejected" in obj || "Rejected" in obj) return "Rejected";
+    if ("pending" in obj || "Pending" in obj) return "Pending";
+    // __kind__ format fallback
+    if ("__kind__" in obj) {
+      const kind = (obj.__kind__ as string).toLowerCase();
+      if (kind === "approved") return "Approved";
+      if (kind === "rejected") return "Rejected";
+      return "Pending";
+    }
   }
-  if (typeof status === "string") return status as StatusKind;
+  if (typeof status === "string") {
+    const lower = status.toLowerCase();
+    if (lower === "approved") return "Approved";
+    if (lower === "rejected") return "Rejected";
+  }
   return "Pending";
 }
 
@@ -33,37 +51,49 @@ export default function AdminDashboard() {
     queryKey: ["adminApprovals"],
     queryFn: async () => {
       if (!actor) return [];
-      return (actor as any).listApprovals() as Promise<
-        Array<{ user: unknown; status: unknown; name?: string[] }>
+      return (actor as any).getAllUserApprovals() as Promise<
+        Array<{ user: unknown; status: unknown; name: [] | [string] }>
       >;
     },
     enabled: !!actor,
-    refetchInterval: 15000,
+    refetchInterval: 10000,
   });
 
-  const setApprovalMutation = useMutation({
-    mutationFn: async ({
-      user,
-      status,
-    }: {
-      user: unknown;
-      status: StatusKind;
-    }) => {
+  const approveMutation = useMutation({
+    mutationFn: async (user: unknown) => {
       if (!actor) throw new Error("No actor");
-      const statusArg =
-        typeof status === "string" ? { __kind__: status } : status;
-      await (actor as any).setApproval(user, statusArg);
+      await (actor as any).approveUser(user);
     },
-    onSuccess: (_, { status }) => {
-      toast.success(`User ${status.toLowerCase()} successfully`);
+    onSuccess: () => {
+      toast.success("User approved successfully");
       queryClient.invalidateQueries({ queryKey: ["adminApprovals"] });
     },
-    onError: () => toast.error("Action failed. Please try again."),
+    onError: (err) => {
+      console.error("Approve error:", err);
+      toast.error("Failed to approve. Please try again.");
+    },
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: async (user: unknown) => {
+      if (!actor) throw new Error("No actor");
+      await (actor as any).rejectUser(user);
+    },
+    onSuccess: () => {
+      toast.success("User rejected.");
+      queryClient.invalidateQueries({ queryKey: ["adminApprovals"] });
+    },
+    onError: (err) => {
+      console.error("Reject error:", err);
+      toast.error("Failed to reject. Please try again.");
+    },
   });
 
   const pendingCount = approvals.filter(
     (a) => extractStatus(a.status) === "Pending",
   ).length;
+
+  const isMutating = approveMutation.isPending || rejectMutation.isPending;
 
   return (
     <main className="flex-1 max-w-5xl mx-auto px-4 py-10 w-full">
@@ -196,20 +226,21 @@ export default function AdminDashboard() {
               <TableBody>
                 {approvals.map((entry, idx) => {
                   const status = extractStatus(entry.status);
+                  // Candid optional ?Text comes as [] | [string]
                   const nameVal = Array.isArray(entry.name)
                     ? entry.name[0]
-                    : entry.name;
+                    : (entry.name as string | undefined);
                   const principalStr =
+                    entry.user != null &&
                     typeof entry.user === "object" &&
-                    entry.user !== null &&
                     "toString" in entry.user
-                      ? (entry.user as any).toString()
-                      : String(entry.user);
+                      ? (entry.user as { toString(): string }).toString()
+                      : String(entry.user ?? "");
                   const ocidIdx = idx + 1;
 
                   return (
                     <TableRow
-                      key={principalStr}
+                      key={principalStr || ocidIdx}
                       className="border-border"
                       data-ocid={`admin.row.${ocidIdx}`}
                     >
@@ -217,7 +248,9 @@ export default function AdminDashboard() {
                         {ocidIdx}
                       </TableCell>
                       <TableCell className="font-medium">
-                        {nameVal || (
+                        {nameVal ? (
+                          nameVal
+                        ) : (
                           <span className="text-muted-foreground italic">
                             Unknown
                           </span>
@@ -227,7 +260,7 @@ export default function AdminDashboard() {
                         className="font-mono text-xs text-muted-foreground max-w-[180px] truncate"
                         title={principalStr}
                       >
-                        {principalStr}
+                        {principalStr || "—"}
                       </TableCell>
                       <TableCell>
                         <StatusBadge status={status} />
@@ -238,13 +271,8 @@ export default function AdminDashboard() {
                             <Button
                               data-ocid={`admin.confirm_button.${ocidIdx}`}
                               size="sm"
-                              onClick={() =>
-                                setApprovalMutation.mutate({
-                                  user: entry.user,
-                                  status: "Approved",
-                                })
-                              }
-                              disabled={setApprovalMutation.isPending}
+                              onClick={() => approveMutation.mutate(entry.user)}
+                              disabled={isMutating}
                               className="h-7 text-xs gap-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30"
                               variant="ghost"
                             >
@@ -256,13 +284,8 @@ export default function AdminDashboard() {
                             <Button
                               data-ocid={`admin.delete_button.${ocidIdx}`}
                               size="sm"
-                              onClick={() =>
-                                setApprovalMutation.mutate({
-                                  user: entry.user,
-                                  status: "Rejected",
-                                })
-                              }
-                              disabled={setApprovalMutation.isPending}
+                              onClick={() => rejectMutation.mutate(entry.user)}
+                              disabled={isMutating}
                               className="h-7 text-xs gap-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30"
                               variant="ghost"
                             >

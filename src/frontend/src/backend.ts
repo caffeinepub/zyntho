@@ -116,6 +116,15 @@ export interface Chapter {
     title: string;
     topics: Array<Topic>;
 }
+export interface UserProfile {
+    name: string;
+}
+export type ApprovalStatus = { __kind__: "approved" } | { __kind__: "rejected" } | { __kind__: "pending" };
+export type UserRole = { __kind__: "admin" } | { __kind__: "user" } | { __kind__: "guest" };
+export interface UserApprovalInfo {
+    principal: Principal;
+    status: ApprovalStatus;
+}
 export interface backendInterface {
     getChapterById(id: bigint): Promise<Chapter>;
     getChapters(): Promise<Array<Chapter>>;
@@ -123,92 +132,92 @@ export interface backendInterface {
     isTopicComplete(topicId: bigint): Promise<boolean>;
     markTopicComplete(topicId: bigint): Promise<void>;
     seedContent(newContent: Content): Promise<void>;
+    _initializeAccessControlWithSecret(secret: string): Promise<void>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserRole(): Promise<UserRole>;
+    isCallerApproved(): Promise<boolean>;
+    isCallerAdmin(): Promise<boolean>;
+    getAllUserApprovals(): Promise<Array<UserApprovalInfo>>;
+    approveUser(user: Principal): Promise<void>;
+    rejectUser(user: Principal): Promise<void>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
-    async getChapterById(arg0: bigint): Promise<Chapter> {
+    private async _call<T>(fn: () => Promise<T>): Promise<T> {
         if (this.processError) {
             try {
-                const result = await this.actor.getChapterById(arg0);
-                return result;
+                return await fn();
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
-        } else {
-            const result = await this.actor.getChapterById(arg0);
-            return result;
         }
+        return fn();
+    }
+    async getChapterById(arg0: bigint): Promise<Chapter> {
+        return this._call(() => this.actor.getChapterById(arg0));
     }
     async getChapters(): Promise<Array<Chapter>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getChapters();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getChapters();
-            return result;
-        }
+        return this._call(() => this.actor.getChapters());
     }
     async getInterviewPrepContent(arg0: string): Promise<InterviewPrepContent> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getInterviewPrepContent(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getInterviewPrepContent(arg0);
-            return result;
-        }
+        return this._call(() => this.actor.getInterviewPrepContent(arg0));
     }
     async isTopicComplete(arg0: bigint): Promise<boolean> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.isTopicComplete(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.isTopicComplete(arg0);
-            return result;
-        }
+        return this._call(() => this.actor.isTopicComplete(arg0));
     }
     async markTopicComplete(arg0: bigint): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.markTopicComplete(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.markTopicComplete(arg0);
-            return result;
-        }
+        return this._call(() => this.actor.markTopicComplete(arg0));
     }
     async seedContent(arg0: Content): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.seedContent(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.seedContent(arg0);
-            return result;
+        return this._call(() => this.actor.seedContent(arg0));
+    }
+    async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
+        return this._call(() => this.actor._initializeAccessControlWithSecret(arg0));
+    }
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
+        return this._call(() => this.actor.saveCallerUserProfile(arg0));
+    }
+    async getCallerUserProfile(): Promise<UserProfile | null> {
+        const result = await this._call(() => this.actor.getCallerUserProfile());
+        // Candid returns opt as [] | [T]
+        if (Array.isArray(result)) {
+            return result.length > 0 ? result[0] : null;
         }
+        return result ?? null;
+    }
+    async getCallerUserRole(): Promise<UserRole> {
+        const raw = await this._call(() => this.actor.getCallerUserRole());
+        // Convert Candid variant { admin: null } to { __kind__: "admin" }
+        if (raw && typeof raw === 'object' && !('__kind__' in raw)) {
+            const key = Object.keys(raw)[0];
+            return { __kind__: key } as UserRole;
+        }
+        return raw as UserRole;
+    }
+    async isCallerApproved(): Promise<boolean> {
+        return this._call(() => this.actor.isCallerApproved());
+    }
+    async isCallerAdmin(): Promise<boolean> {
+        return this._call(() => this.actor.isCallerAdmin());
+    }
+    async getAllUserApprovals(): Promise<Array<UserApprovalInfo>> {
+        const results = await this._call(() => this.actor.getAllUserApprovals());
+        return results.map((item: any) => ({
+            principal: item.principal,
+            status: (() => {
+                if ('__kind__' in item.status) return item.status;
+                const key = Object.keys(item.status)[0];
+                return { __kind__: key };
+            })(),
+        }));
+    }
+    async approveUser(arg0: Principal): Promise<void> {
+        return this._call(() => this.actor.approveUser(arg0));
+    }
+    async rejectUser(arg0: Principal): Promise<void> {
+        return this._call(() => this.actor.rejectUser(arg0));
     }
 }
 export interface CreateActorOptions {
