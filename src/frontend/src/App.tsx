@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ProfileSetupModal from "./components/ProfileSetupModal";
@@ -24,19 +24,46 @@ type AppPage =
   | { name: "hr" }
   | { name: "admin" };
 
+function LoadingScreen({
+  message,
+  subMessage,
+}: { message: string; subMessage?: string }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div
+        className="flex flex-col items-center gap-4 text-center px-6"
+        data-ocid="app.loading_state"
+      >
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-base font-medium text-foreground">{message}</p>
+        {subMessage && (
+          <p className="text-sm text-muted-foreground max-w-xs">{subMessage}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [page, setPage] = useState<AppPage>({ name: "dashboard" });
+  const [slowLoad, setSlowLoad] = useState(false);
   const { isInitializing: isIIInitializing } = useInternetIdentity();
   const {
     isInitializing,
     isLoggedIn,
     profile,
-    isProfileLoading,
-    hasProfile,
     isApproved,
     isApprovedLoading,
+    hasProfile,
     isAdmin,
+    statusLoaded,
   } = useAuthFlow();
+
+  // After 5 seconds of loading, show a reassuring sub-message so users don't leave
+  useEffect(() => {
+    const timer = setTimeout(() => setSlowLoad(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const currentNavPage: NavPage =
     page.name === "admin"
@@ -59,22 +86,19 @@ export default function App() {
     else if (target === "admin") setPage({ name: "admin" });
   };
 
-  // Full-screen loading while auth initializes
+  // ── STEP 1: Wait for Internet Identity and actor to initialise ──────────────
   if (isIIInitializing || isInitializing) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div
-          className="flex flex-col items-center gap-4"
-          data-ocid="app.loading_state"
-        >
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading Zyntho...</p>
-        </div>
-      </div>
+      <LoadingScreen
+        message="Loading Zyntho..."
+        subMessage={
+          slowLoad ? "Almost there, connecting to the network..." : undefined
+        }
+      />
     );
   }
 
-  // Not logged in → full-screen login
+  // ── STEP 2: Not logged in → full-screen login ──────────────────────────────
   if (!isLoggedIn) {
     return (
       <>
@@ -84,24 +108,21 @@ export default function App() {
     );
   }
 
-  // Profile loading
-  if (isProfileLoading) {
+  // ── STEP 3: Logged in but status not yet fetched from backend ──────────────
+  if (!statusLoaded || isApprovedLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div
-          className="flex flex-col items-center gap-4"
-          data-ocid="app.loading_state"
-        >
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">
-            Setting up your account...
-          </p>
-        </div>
-      </div>
+      <LoadingScreen
+        message="Verifying access..."
+        subMessage={
+          slowLoad
+            ? "This usually takes just a few seconds. Please hold on."
+            : undefined
+        }
+      />
     );
   }
 
-  // No profile → show profile setup modal (full screen with modal overlay)
+  // ── STEP 4: No profile → show profile setup ────────────────────────────────
   if (!hasProfile) {
     return (
       <div className="min-h-screen bg-background">
@@ -116,22 +137,7 @@ export default function App() {
     );
   }
 
-  // Approval loading
-  if (isApprovedLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div
-          className="flex flex-col items-center gap-4"
-          data-ocid="app.loading_state"
-        >
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Checking access...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Not approved → pending screen
+  // ── STEP 5: Has profile but NOT approved → pending/request screen ──────────
   if (!isApproved) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
@@ -149,7 +155,7 @@ export default function App() {
     );
   }
 
-  // Fully approved — show full app
+  // ── STEP 6: Fully approved → show full app ─────────────────────────────────
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar currentPage={currentNavPage} onNavigate={handleNavigate} />

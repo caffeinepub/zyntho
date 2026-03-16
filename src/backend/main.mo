@@ -3,6 +3,7 @@ import Principal "mo:core/Principal";
 import Set "mo:core/Set";
 import Runtime "mo:core/Runtime";
 import Prim "mo:prim";
+import Timer "mo:core/Timer";
 import AccessControl "./authorization/access-control";
 import Approval "./user-approval/approval";
 
@@ -44,6 +45,13 @@ actor {
     name : Text;
   };
 
+  // Single atomic status returned to the frontend -- eliminates all race conditions
+  type CallerStatus = {
+    isAdmin : Bool;
+    isApproved : Bool;
+    profile : ?UserProfile;
+  };
+
   type AdminUserApprovalInfo = {
     user : Principal;
     status : Approval.ApprovalStatus;
@@ -56,11 +64,29 @@ actor {
   let approvalState = Approval.initState(accessControlState);
   let userProfiles = Map.empty<Principal, UserProfile>();
 
+  // Keep-alive: ping every 60 seconds to prevent cold starts
+  let _keepAliveTimer = Timer.recurringTimer<system>(
+    #seconds(60),
+    func() : async () { }
+  );
+
+  // Internal helper: checks admin without trapping on unregistered users
+  func isAdminSafe(caller : Principal) : Bool {
+    if (caller.isAnonymous()) { return false };
+    switch (accessControlState.userRoles.get(caller)) {
+      case (?#admin) { true };
+      case (_) { false };
+    };
+  };
+
   // Internal helper: returns true only if the caller is approved OR is admin
   func isAuthorizedCaller(caller : Principal) : Bool {
     if (caller.isAnonymous()) { return false };
-    if (AccessControl.isAdmin(accessControlState, caller)) { return true };
-    Approval.isApproved(approvalState, caller);
+    if (isAdminSafe(caller)) { return true };
+    switch (approvalState.approvalStatus.get(caller)) {
+      case (?#approved) { true };
+      case (_) { false };
+    };
   };
 
   public shared ({ caller }) func _initializeAccessControlWithSecret(userSecret : Text) : async () {
@@ -73,16 +99,22 @@ actor {
     };
   };
 
-  public query ({ caller }) func getCallerUserRole() : async AccessControl.UserRole {
-    if (caller.isAnonymous()) { return #guest };
-    switch (accessControlState.userRoles.get(caller)) {
-      case (?role) { role };
-      case (null) { #guest };
+  // SINGLE ATOMIC STATUS CALL -- frontend uses ONLY this for auth gating.
+  public query ({ caller }) func getCallerStatus() : async CallerStatus {
+    if (caller.isAnonymous()) {
+      return { isAdmin = false; isApproved = false; profile = null };
     };
-  };
-
-  public query ({ caller }) func isCallerAdmin() : async Bool {
-    AccessControl.isAdmin(accessControlState, caller);
+    let isAdm = isAdminSafe(caller);
+    let isApp = if (isAdm) {
+      true
+    } else {
+      switch (approvalState.approvalStatus.get(caller)) {
+        case (?#approved) { true };
+        case (_) { false };
+      };
+    };
+    let prof = userProfiles.get(caller);
+    { isAdmin = isAdm; isApproved = isApp; profile = prof };
   };
 
   public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
@@ -92,37 +124,13 @@ actor {
       case (null) { accessControlState.userRoles.add(caller, #user) };
       case (?_) {};
     };
-    // Only set pending if no approval status exists yet.
-    // Never auto-approve: pending users must wait for admin action.
-    if (approvalState.approvalStatus.get(caller) == null) {
-      Approval.setApproval(approvalState, caller, #pending);
-    };
-  };
-
-  public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
-    userProfiles.get(caller);
-  };
-
-  public query ({ caller }) func isCallerApproved() : async Bool {
-    if (caller.isAnonymous()) { return false };
-    // Admin always counts as approved
-    if (AccessControl.isAdmin(accessControlState, caller)) { return true };
-    // For everyone else, must be explicitly #approved — pending/rejected/missing = false
-    switch (approvalState.approvalStatus.get(caller)) {
-      case (?#approved) { true };
-      case (_) { false };
-    };
-  };
-
-  public shared ({ caller }) func requestApproval() : async () {
-    if (caller.isAnonymous()) { Runtime.trap("Anonymous users cannot request approval") };
     if (approvalState.approvalStatus.get(caller) == null) {
       Approval.setApproval(approvalState, caller, #pending);
     };
   };
 
   public query ({ caller }) func getAllUserApprovals() : async [AdminUserApprovalInfo] {
-    if (not AccessControl.isAdmin(accessControlState, caller)) {
+    if (not isAdminSafe(caller)) {
       Runtime.trap("Unauthorized");
     };
     approvalState.approvalStatus.entries().map(
@@ -137,14 +145,14 @@ actor {
   };
 
   public shared ({ caller }) func approveUser(user : Principal) : async () {
-    if (not AccessControl.isAdmin(accessControlState, caller)) {
+    if (not isAdminSafe(caller)) {
       Runtime.trap("Unauthorized");
     };
     Approval.setApproval(approvalState, user, #approved);
   };
 
   public shared ({ caller }) func rejectUser(user : Principal) : async () {
-    if (not AccessControl.isAdmin(accessControlState, caller)) {
+    if (not isAdminSafe(caller)) {
       Runtime.trap("Unauthorized");
     };
     Approval.setApproval(approvalState, user, #rejected);
@@ -156,7 +164,6 @@ actor {
     };
   };
 
-  // Content endpoints are gated: only admin or approved users can read content.
   public query ({ caller }) func getChapters() : async [Chapter] {
     if (not isAuthorizedCaller(caller)) {
       Runtime.trap("Access denied: awaiting admin approval");
