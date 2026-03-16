@@ -16,18 +16,13 @@ import { useActor } from "../hooks/useActor";
 
 type StatusKind = "Approved" | "Pending" | "Rejected";
 
-// Handles all Motoko variant serialization formats:
-// { pending: null }, { approved: null }, { rejected: null }
-// { __kind__: "pending" }, or plain strings
 function extractStatus(status: unknown): StatusKind {
   if (!status) return "Pending";
   if (typeof status === "object" && status !== null) {
     const obj = status as Record<string, unknown>;
-    // Motoko variant format: { approved: null }, { pending: null }, { rejected: null }
     if ("approved" in obj || "Approved" in obj) return "Approved";
     if ("rejected" in obj || "Rejected" in obj) return "Rejected";
     if ("pending" in obj || "Pending" in obj) return "Pending";
-    // __kind__ format fallback
     if ("__kind__" in obj) {
       const kind = (obj.__kind__ as string).toLowerCase();
       if (kind === "approved") return "Approved";
@@ -43,11 +38,17 @@ function extractStatus(status: unknown): StatusKind {
   return "Pending";
 }
 
+const STATUS_ORDER: Record<StatusKind, number> = {
+  Pending: 0,
+  Approved: 1,
+  Rejected: 2,
+};
+
 export default function AdminDashboard() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
 
-  const { data: approvals = [], isLoading } = useQuery({
+  const { data: rawApprovals = [], isLoading } = useQuery({
     queryKey: ["adminApprovals"],
     queryFn: async () => {
       if (!actor) return [];
@@ -58,6 +59,13 @@ export default function AdminDashboard() {
     enabled: !!actor,
     refetchInterval: 10000,
   });
+
+  // Sort: Pending first, then Approved, then Rejected
+  const approvals = [...rawApprovals].sort(
+    (a, b) =>
+      STATUS_ORDER[extractStatus(a.status)] -
+      STATUS_ORDER[extractStatus(b.status)],
+  );
 
   const approveMutation = useMutation({
     mutationFn: async (user: unknown) => {
@@ -89,10 +97,10 @@ export default function AdminDashboard() {
     },
   });
 
-  const pendingCount = approvals.filter(
+  const pendingItems = approvals.filter(
     (a) => extractStatus(a.status) === "Pending",
-  ).length;
-
+  );
+  const pendingCount = pendingItems.length;
   const isMutating = approveMutation.isPending || rejectMutation.isPending;
 
   return (
@@ -183,6 +191,17 @@ export default function AdminDashboard() {
           ))}
         </div>
 
+        {/* Pending section callout */}
+        {pendingCount > 0 && (
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+            <Clock className="h-4 w-4 text-amber-400 shrink-0" />
+            <p className="text-sm text-amber-300 font-medium">
+              {pendingCount} user{pendingCount > 1 ? "s" : ""} waiting for your
+              approval
+            </p>
+          </div>
+        )}
+
         {/* Table */}
         <div
           className="rounded-xl border border-border bg-card overflow-hidden"
@@ -226,7 +245,6 @@ export default function AdminDashboard() {
               <TableBody>
                 {approvals.map((entry, idx) => {
                   const status = extractStatus(entry.status);
-                  // Candid optional ?Text comes as [] | [string]
                   const nameVal = Array.isArray(entry.name)
                     ? entry.name[0]
                     : (entry.name as string | undefined);
@@ -241,7 +259,11 @@ export default function AdminDashboard() {
                   return (
                     <TableRow
                       key={principalStr || ocidIdx}
-                      className="border-border"
+                      className={`border-border ${
+                        status === "Pending"
+                          ? "bg-amber-500/5 hover:bg-amber-500/10"
+                          : ""
+                      }`}
                       data-ocid={`admin.row.${ocidIdx}`}
                     >
                       <TableCell className="text-muted-foreground text-sm">
@@ -249,7 +271,12 @@ export default function AdminDashboard() {
                       </TableCell>
                       <TableCell className="font-medium">
                         {nameVal ? (
-                          nameVal
+                          <span className="flex items-center gap-2">
+                            {nameVal}
+                            {status === "Pending" && (
+                              <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                            )}
+                          </span>
                         ) : (
                           <span className="text-muted-foreground italic">
                             Unknown

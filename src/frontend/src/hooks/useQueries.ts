@@ -1,81 +1,22 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { Chapter, InterviewPrepContent } from "../backend.d";
-import { SEED_DATA } from "../data/seedData";
-import { useActor } from "./useActor";
+// All chapter and interview content is served from local data files.
+// No backend calls are needed for content -- the backend is auth/approval-only.
+// Progress is persisted in localStorage via useProgress.
+import { chapters } from "../data/chapters";
+import { interviewRoles } from "../data/interviewRoles";
 
 export function useChapters() {
-  const { actor, isFetching } = useActor();
-  const queryClient = useQueryClient();
-
-  return useQuery<Chapter[]>({
-    queryKey: ["chapters"],
-    queryFn: async () => {
-      if (!actor) return [];
-      const chapters = await actor.getChapters();
-      if (chapters.length === 0) {
-        await actor.seedContent(SEED_DATA);
-        return actor.getChapters();
-      }
-      // Prefetch completion status for all topics
-      const allTopicIds = chapters.flatMap((c) => c.topics.map((t) => t.id));
-      await Promise.all(
-        allTopicIds.map(async (id) => {
-          const complete = await actor.isTopicComplete(id);
-          queryClient.setQueryData(["topicComplete", id.toString()], complete);
-        }),
-      );
-      return chapters;
-    },
-    enabled: !!actor && !isFetching,
-  });
+  return { data: chapters, isLoading: false, error: null };
 }
 
-export function useChapterById(id: bigint) {
-  const { actor, isFetching } = useActor();
-  return useQuery<Chapter>({
-    queryKey: ["chapter", id.toString()],
-    queryFn: async () => {
-      if (!actor) throw new Error("No actor");
-      return actor.getChapterById(id);
-    },
-    enabled: !!actor && !isFetching,
-  });
+export function useChapterById(id: number) {
+  const chapter = chapters.find((c) => c.id === id);
+  return { data: chapter ?? null, isLoading: false, error: null };
 }
 
-export function useTopicComplete(topicId: bigint) {
-  const { actor, isFetching } = useActor();
-  return useQuery<boolean>({
-    queryKey: ["topicComplete", topicId.toString()],
-    queryFn: async () => {
-      if (!actor) return false;
-      return actor.isTopicComplete(topicId);
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useMarkTopicComplete() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (topicId: bigint) => {
-      if (!actor) throw new Error("No actor");
-      await actor.markTopicComplete(topicId);
-    },
-    onSuccess: (_data, topicId) => {
-      queryClient.setQueryData(["topicComplete", topicId.toString()], true);
-    },
-  });
-}
-
+// jobRole can be the role id (e.g. "service-desk") or title
 export function useInterviewPrep(jobRole: string) {
-  const { actor, isFetching } = useActor();
-  return useQuery<InterviewPrepContent>({
-    queryKey: ["interviewPrep", jobRole],
-    queryFn: async () => {
-      if (!actor) throw new Error("No actor");
-      return actor.getInterviewPrepContent(jobRole);
-    },
-    enabled: !!actor && !isFetching && !!jobRole,
-  });
+  const role = interviewRoles.find(
+    (r) => r.id === jobRole || r.title === jobRole,
+  );
+  return { data: role ?? null, isLoading: false, error: null };
 }

@@ -31,7 +31,8 @@ export function useAuthFlow() {
 
   // SINGLE atomic query -- replaces all previous separate role/admin/approval queries.
   // staleTime: 0 + gcTime: 0 guarantees the backend is ALWAYS the source of truth.
-  // No window exists where a stale or undefined value can let a user slip through.
+  // No custom timeout -- let the ICP agent handle its own timeout naturally.
+  // Cold starts can take 30-60 seconds; cutting off at 12s just causes harmful retries.
   const statusQuery = useQuery({
     queryKey: ["callerStatus", identity?.getPrincipal().toString()],
     queryFn: async (): Promise<RawCallerStatus> => {
@@ -44,6 +45,7 @@ export function useAuthFlow() {
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
     retry: 2,
+    retryDelay: 5000,
   });
 
   const profile = parseProfile(statusQuery.data?.profile);

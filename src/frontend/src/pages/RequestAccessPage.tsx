@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, Send } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useActor } from "../hooks/useActor";
 import { useInvalidateAuth } from "../hooks/useAuthFlow";
@@ -19,6 +19,15 @@ export default function RequestAccessPage({
   const invalidateAuth = useInvalidateAuth();
   const [requesting, setRequesting] = useState(false);
   const [requested, setRequested] = useState(alreadyRequested);
+
+  // Auto-refresh every 30 seconds when in pending state
+  useEffect(() => {
+    if (!requested) return;
+    const interval = setInterval(() => {
+      window.location.reload();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [requested]);
 
   const handleRequest = async () => {
     if (!actor) return;
@@ -100,14 +109,19 @@ export default function RequestAccessPage({
               </div>
             </div>
 
-            <Button
-              data-ocid="access.secondary_button"
-              variant="outline"
-              onClick={() => window.location.reload()}
-              className="w-full border-border"
-            >
-              Check approval status
-            </Button>
+            <div className="w-full flex flex-col items-center gap-2">
+              <Button
+                data-ocid="access.secondary_button"
+                variant="outline"
+                onClick={() => window.location.reload()}
+                className="w-full border-border"
+              >
+                Check approval status
+              </Button>
+              <p className="text-xs text-muted-foreground/60">
+                Auto-checking every 30 seconds...
+              </p>
+            </div>
           </motion.div>
         ) : (
           <motion.div

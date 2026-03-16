@@ -8,44 +8,31 @@ import AccessControl "./authorization/access-control";
 import Approval "./user-approval/approval";
 
 actor {
-  type Content = {
-    chapters : [Chapter];
-    interviewPrepContent : [InterviewPrepContent];
-  };
-
-  type Chapter = {
-    id : Nat;
-    title : Text;
-    topics : [Topic];
-  };
-
-  type Topic = {
-    id : Nat;
-    title : Text;
-    notes : Text;
-  };
-
-  type InterviewPrepContent = {
+  // ── Legacy types kept ONLY for stable-variable upgrade compatibility ────────
+  // The previous canister version stored chapter/interview content in stable
+  // vars. These declarations let Motoko migrate the upgrade safely.
+  // The vars are never written or read by any live code.
+  type LegacyTopic = { id : Nat; title : Text; notes : Text };
+  type LegacyChapter = { id : Nat; title : Text; topics : [LegacyTopic] };
+  type LegacyInterviewQuestion = { question : Text; answer : Text };
+  type LegacyTimelineEntry = { day : Nat; activity : Text };
+  type LegacyInterviewPrepContent = {
     jobRole : Text;
-    questions : [InterviewQuestion];
-    twoDayTimeline : [TimelineEntry];
+    questions : [LegacyInterviewQuestion];
+    twoDayTimeline : [LegacyTimelineEntry];
+  };
+  type LegacyContent = {
+    chapters : [LegacyChapter];
+    interviewPrepContent : [LegacyInterviewPrepContent];
   };
 
-  type InterviewQuestion = {
-    question : Text;
-    answer : Text;
-  };
+  // Preserved stable vars from the previous version -- never used going forward
+  var content : ?LegacyContent = null;
+  let userProgress = Map.empty<Principal, Set.Set<Nat>>();
+  // ── End legacy section ──────────────────────────────────────────────────────
 
-  type TimelineEntry = {
-    day : Nat;
-    activity : Text;
-  };
+  type UserProfile = { name : Text };
 
-  type UserProfile = {
-    name : Text;
-  };
-
-  // Single atomic status returned to the frontend -- eliminates all race conditions
   type CallerStatus = {
     isAdmin : Bool;
     isApproved : Bool;
@@ -58,8 +45,6 @@ actor {
     name : ?Text;
   };
 
-  var content : ?Content = null;
-  let userProgress = Map.empty<Principal, Set.Set<Nat>>();
   let accessControlState = AccessControl.initState();
   let approvalState = Approval.initState(accessControlState);
   let userProfiles = Map.empty<Principal, UserProfile>();
@@ -70,21 +55,10 @@ actor {
     func() : async () { }
   );
 
-  // Internal helper: checks admin without trapping on unregistered users
   func isAdminSafe(caller : Principal) : Bool {
     if (caller.isAnonymous()) { return false };
     switch (accessControlState.userRoles.get(caller)) {
       case (?#admin) { true };
-      case (_) { false };
-    };
-  };
-
-  // Internal helper: returns true only if the caller is approved OR is admin
-  func isAuthorizedCaller(caller : Principal) : Bool {
-    if (caller.isAnonymous()) { return false };
-    if (isAdminSafe(caller)) { return true };
-    switch (approvalState.approvalStatus.get(caller)) {
-      case (?#approved) { true };
       case (_) { false };
     };
   };
@@ -99,7 +73,6 @@ actor {
     };
   };
 
-  // SINGLE ATOMIC STATUS CALL -- frontend uses ONLY this for auth gating.
   public query ({ caller }) func getCallerStatus() : async CallerStatus {
     if (caller.isAnonymous()) {
       return { isAdmin = false; isApproved = false; profile = null };
@@ -130,9 +103,7 @@ actor {
   };
 
   public query ({ caller }) func getAllUserApprovals() : async [AdminUserApprovalInfo] {
-    if (not isAdminSafe(caller)) {
-      Runtime.trap("Unauthorized");
-    };
+    if (not isAdminSafe(caller)) { Runtime.trap("Unauthorized") };
     approvalState.approvalStatus.entries().map(
       func((principal, status)) : AdminUserApprovalInfo {
         let name = switch (userProfiles.get(principal)) {
@@ -145,81 +116,12 @@ actor {
   };
 
   public shared ({ caller }) func approveUser(user : Principal) : async () {
-    if (not isAdminSafe(caller)) {
-      Runtime.trap("Unauthorized");
-    };
+    if (not isAdminSafe(caller)) { Runtime.trap("Unauthorized") };
     Approval.setApproval(approvalState, user, #approved);
   };
 
   public shared ({ caller }) func rejectUser(user : Principal) : async () {
-    if (not isAdminSafe(caller)) {
-      Runtime.trap("Unauthorized");
-    };
+    if (not isAdminSafe(caller)) { Runtime.trap("Unauthorized") };
     Approval.setApproval(approvalState, user, #rejected);
-  };
-
-  public shared ({ caller }) func seedContent(newContent : Content) : async () {
-    if (content == null) {
-      content := ?newContent;
-    };
-  };
-
-  public query ({ caller }) func getChapters() : async [Chapter] {
-    if (not isAuthorizedCaller(caller)) {
-      Runtime.trap("Access denied: awaiting admin approval");
-    };
-    switch (content) {
-      case (null) { [] };
-      case (?c) { c.chapters };
-    };
-  };
-
-  public query ({ caller }) func getChapterById(id : Nat) : async Chapter {
-    if (not isAuthorizedCaller(caller)) {
-      Runtime.trap("Access denied: awaiting admin approval");
-    };
-    switch (content) {
-      case (null) { Runtime.trap("Content not seeded") };
-      case (?c) {
-        switch (c.chapters.values().find(func(ch) { ch.id == id })) {
-          case (null) { Runtime.trap("Chapter not found") };
-          case (?ch) { ch };
-        };
-      };
-    };
-  };
-
-  public shared ({ caller }) func markTopicComplete(topicId : Nat) : async () {
-    if (not isAuthorizedCaller(caller)) {
-      Runtime.trap("Access denied: awaiting admin approval");
-    };
-    let current = switch (userProgress.get(caller)) {
-      case (null) { Set.empty<Nat>() };
-      case (?p) { p };
-    };
-    current.add(topicId);
-    userProgress.add(caller, current);
-  };
-
-  public query ({ caller }) func isTopicComplete(topicId : Nat) : async Bool {
-    switch (userProgress.get(caller)) {
-      case (null) { false };
-      case (?p) { p.contains(topicId) };
-    };
-  };
-
-  public query ({ caller }) func getInterviewPrepContent(jobRole : Text) : async InterviewPrepContent {
-    if (not isAuthorizedCaller(caller)) {
-      Runtime.trap("Access denied: awaiting admin approval");
-    };
-    switch (content) {
-      case (null) { Runtime.trap("Content not seeded") };
-      case (?c) {
-        switch (c.interviewPrepContent.values().find(func(ic) { ic.jobRole == jobRole })) {
-          case (null) { Runtime.trap("Interview prep not found") };
-          case (?ic) { ic };
-        };
-      };
-    };
   };
 };

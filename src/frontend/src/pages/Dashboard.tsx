@@ -1,7 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { chapters } from "@/data/chapters";
 import { useProgress } from "@/hooks/useProgress";
 import { BookOpen, CheckCircle2, Circle, Mic2, Users, Zap } from "lucide-react";
@@ -72,30 +70,40 @@ export default function Dashboard({
             }}
           />
           <div className="relative z-10 max-w-xl">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-4">
               <Zap className="h-4 w-4 text-cyan-400" />
-              {userName ? (
-                <p className="text-cyan-300 text-sm font-semibold uppercase tracking-widest">
-                  Hello, {userName}
-                </p>
-              ) : (
-                <p className="text-cyan-300 text-sm font-semibold uppercase tracking-widest">
-                  Welcome to
-                </p>
-              )}
+              <span className="text-cyan-300 text-xs font-semibold uppercase tracking-widest">
+                IT &amp; Customer Support Training
+              </span>
             </div>
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-3 leading-tight">
-              {userName ? (
-                <>
-                  Welcome to{" "}
-                  <span className="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">
-                    Zyntho
-                  </span>
-                </>
-              ) : (
-                "Zyntho"
-              )}
-            </h1>
+
+            {userName ? (
+              <>
+                <h1
+                  className="font-display text-4xl md:text-5xl font-bold mb-1 leading-tight"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, oklch(0.95 0.02 200), oklch(0.90 0.08 260), oklch(0.85 0.14 280))",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  Hello, {userName}!
+                </h1>
+                <p className="text-blue-200/70 text-base md:text-lg mb-4 font-medium">
+                  Welcome to Zyntho
+                </p>
+              </>
+            ) : (
+              <h1 className="font-display text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+                Welcome to{" "}
+                <span className="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">
+                  Zyntho
+                </span>
+              </h1>
+            )}
+
             <p className="text-blue-200 text-lg leading-relaxed">
               Your guide to IT &amp; Customer Support careers.{" "}
               <span className="text-cyan-300 font-semibold">Learn.</span>{" "}
