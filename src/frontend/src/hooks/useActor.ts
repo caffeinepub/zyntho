@@ -26,21 +26,13 @@ export function useActor() {
       };
 
       const actor = await createActorWithConfig(actorOptions);
-
-      // ONLY call _initializeAccessControlWithSecret for the admin user
-      // (identified by having the caffeineAdminToken URL parameter).
-      // Calling this for regular users was causing:
-      //   1. A 5-30s update call that blocked login for everyone
-      //   2. A security hole where any user got auto-approved
       const adminToken = getSecretParameter("caffeineAdminToken") || "";
-      if (adminToken) {
-        await actor._initializeAccessControlWithSecret(adminToken);
-      }
-
+      await actor._initializeAccessControlWithSecret(adminToken);
       return actor;
     },
     // Only refetch when identity changes
     staleTime: Number.POSITIVE_INFINITY,
+    // This will cause the actor to be recreated when the identity changes
     enabled: true,
   });
 

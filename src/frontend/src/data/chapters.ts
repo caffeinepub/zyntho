@@ -6,6 +6,7 @@ export interface Topic {
 export interface Chapter {
   id: number;
   title: string;
+  level: "beginner" | "intermediate" | "advanced";
   description: string;
   topics: Topic[];
 }
@@ -13,524 +14,469 @@ export interface Chapter {
 export const chapters: Chapter[] = [
   {
     id: 1,
-    title: "Customer Service Basics",
+    title: "Customer Service Fundamentals",
+    level: "beginner",
     description:
-      "Foundations of customer service, key metrics, and SLA management.",
+      "Core principles of customer service, communication, and handling diverse customer interactions professionally.",
     topics: [
       {
-        title: "What is customer service and why it matters",
+        title: "What is Customer Service",
         explanation:
-          "Customer service is the support and assistance provided to customers before, during, and after they purchase or use a product or service. It is the direct bridge between a company and its users. Good customer service builds trust, retains customers, and protects the company's reputation. Poor service, on the other hand, leads to churn, negative reviews, and revenue loss. In IT and support roles, customer service is not just about solving technical problems — it is about making the customer feel heard, valued, and confident that their issue will be resolved efficiently.",
+          "Customer service is the direct support and assistance provided to customers before, during, and after their use of a product or service. It acts as the bridge between a company and its users, shaping satisfaction, loyalty, and brand reputation. In IT roles, customer service means solving technical problems while making users feel heard and valued. Poor service leads to churn and negative reviews; exceptional service builds long-term loyalty. Every interaction — whether via phone, email, or chat — is an opportunity to reinforce trust and demonstrate professionalism.",
       },
       {
-        title: "Types of customers: internal vs external",
+        title: "Communication Skills",
         explanation:
-          "Customers are not always external users who pay for a product. In IT support, you will encounter two types. External customers are clients, end-users, or the public who use your company's products or services. Internal customers are employees within your own organisation who depend on IT systems to do their work — for example, the HR team raising a ticket with IT. Understanding the difference helps you adjust your communication style, priority levels, and resolution approach. Internal customers often have faster SLA expectations since downtime directly impacts business operations.",
+          "Effective communication in support roles involves three core elements: tone, pace, and clarity. Tone sets the emotional quality of your voice — warm and professional reassures customers, while flat or aggressive tones escalate situations. Pace determines how fast or slow you speak; too fast causes confusion, too slow frustrates callers. Clarity means using direct, simple language that anyone can understand without technical background. Great communicators adapt their style to each customer — matching their energy level, simplifying jargon, and always confirming that the customer has understood the resolution before closing.",
       },
       {
-        title:
-          "The customer service cycle: contact, understand, resolve, follow-up",
+        title: "Active Listening",
         explanation:
-          "Every support interaction follows a standard cycle. Contact is when the customer reaches out through phone, email, chat, or a ticketing portal. Understand is the critical phase where you actively listen, ask clarifying questions, and confirm what the issue actually is — not just what the customer says it is. Resolve is where you apply your knowledge, tools, and resources to fix the problem. Follow-up ensures the customer is satisfied, the ticket is properly closed, and there is no recurring issue. Skipping any step in this cycle typically leads to poor CSAT scores and reopened tickets.",
+          "Active listening is the deliberate practice of fully concentrating on what a customer says rather than waiting to speak. It prevents misdiagnosis — many tickets are reopened because agents solved the wrong problem. Techniques include summarising the issue back to the customer ('So what you're experiencing is...'), giving verbal acknowledgements like 'I understand' or 'That must be frustrating', asking open-ended questions to gather detail, and taking brief notes. In IT support, active listening is consistently rated the number one soft skill in job descriptions and directly improves First Call Resolution rates.",
       },
       {
-        title: "First Call Resolution (FCR) and why it's important",
+        title: "Empathy and Sympathy",
         explanation:
-          "First Call Resolution (FCR) means resolving a customer's issue completely during the very first interaction, without the need for a callback or follow-up ticket. FCR is one of the most important KPIs in customer service and IT support. A high FCR rate indicates that agents are skilled, well-trained, and empowered to resolve issues independently. It directly improves customer satisfaction because users do not want to repeat their problem multiple times. For the business, a high FCR lowers operational costs by reducing repeat contacts and improving agent efficiency. Most support teams aim for an FCR rate above 70-80%.",
+          "Empathy means understanding and sharing the feelings of your customer — you acknowledge their frustration as real and valid. Sympathy is feeling sorry for them from a distance. In support, empathy is more powerful: 'I understand how disruptive it is to lose access to your email — let's fix this right now.' Sympathy sounds like: 'That's too bad.' Empathy drives genuine connection and reduces tension. Practical empathy techniques include using the customer's name, acknowledging the impact of their issue on their work, and avoiding dismissive language like 'That's not possible' or 'You should have checked the manual.'",
       },
       {
-        title: "Key metrics: CSAT, NPS, AHT (Average Handle Time)",
+        title: "Handling Difficult Customers",
         explanation:
-          "Three metrics dominate customer service reporting. CSAT (Customer Satisfaction Score) is collected through post-interaction surveys asking customers to rate their experience, usually on a scale of 1 to 5. NPS (Net Promoter Score) measures how likely a customer is to recommend your service to others, scored from 0 to 10. AHT (Average Handle Time) is the average total time an agent spends on a call or ticket, including hold time and after-call work. Monitoring these three together gives a full picture of both customer experience quality and operational efficiency. A good agent balances all three.",
+          "Difficult customers are often frustrated customers — their anger is rarely personal; it's about the impact of the unresolved issue on their work or life. The LAST framework is a proven approach: Listen without interrupting, Apologise for the inconvenience (not for being wrong), Solve the problem using your available tools and authority, and Thank the customer for their patience. Never match aggression with aggression. If a customer becomes abusive, calmly state acceptable behaviour boundaries. Escalating to a supervisor is appropriate when the situation is outside your authority or when a customer specifically requests it.",
       },
       {
-        title: "Setting customer expectations and managing SLAs",
+        title: "Customer Satisfaction",
         explanation:
-          "A Service Level Agreement (SLA) is a formal commitment between a service provider and a customer that defines expected response and resolution times. For example, a P2 (high priority) ticket might have an SLA of 4 hours response and 8 hours resolution. Setting expectations means communicating clearly and honestly — if an issue will take 24 hours to resolve, tell the customer upfront rather than letting them wait in silence. Proactive updates and realistic timelines prevent frustration and build trust. Breaching SLAs repeatedly can result in financial penalties and damaged client relationships.",
-      },
-      {
-        title: "Escalation process: when and how to escalate",
-        explanation:
-          "Escalation is the process of passing an unresolved or complex issue to a higher-level team or specialist when the current agent cannot resolve it within their skill level or authority. You should escalate when you have exhausted your troubleshooting steps, the issue requires specialist access (such as database or network team), or the SLA is at risk of being breached. How you escalate matters as much as when. Always provide the next team with a detailed handover note — the issue description, steps already taken, customer details, and urgency level. Poor escalation handovers waste time and frustrate customers further.",
+          "Customer satisfaction (CSAT) measures how well your service met customer expectations. It is typically captured through post-interaction surveys asking users to rate their experience from 1 to 5. High CSAT scores reflect agents who listen well, resolve issues on the first contact, set accurate expectations, and follow up proactively. CSAT is a leading indicator of customer retention — organisations that consistently score above 85% retain significantly more clients. In IT support, CSAT is influenced by speed of resolution, clarity of communication, and whether the agent showed genuine interest in helping the customer.",
       },
     ],
   },
   {
     id: 2,
-    title: "Communication & Presentation Skills",
+    title: "IT Service Management Basics",
+    level: "beginner",
     description:
-      "Verbal communication, active listening, email writing, and presentation delivery.",
+      "Introduction to ITSM frameworks, incident and service request management, and core ITIL concepts.",
     topics: [
       {
-        title: "Verbal communication: tone, pace, clarity",
+        title: "Introduction to ITSM",
         explanation:
-          "Verbal communication in support roles is more than just what you say — it is how you say it. Tone refers to the emotional quality in your voice; a warm, professional tone reassures customers while a flat or aggressive tone can escalate a situation. Pace is how fast or slow you speak; speaking too fast causes confusion, while speaking too slowly can frustrate callers. Clarity means using simple, direct language that the customer can easily understand. In IT support, you must simplify technical concepts without being condescending. Combining the right tone, pace, and clarity creates a professional impression that builds customer confidence immediately.",
+          "IT Service Management (ITSM) is a set of policies and practices for designing, delivering, managing, and improving IT services to meet business needs. Unlike traditional IT management, which focuses on technology, ITSM focuses on outcomes — ensuring IT services provide measurable value to users and the organisation. ITSM frameworks (like ITIL) provide structured processes, roles, and terminology. Key benefits include consistent service delivery, reduced downtime, better change control, and improved customer satisfaction. Understanding ITSM fundamentals is essential for anyone working in IT support, service desk, or operations roles.",
       },
       {
-        title: "Active listening techniques",
+        title: "Incident Management",
         explanation:
-          "Active listening is the deliberate practice of fully concentrating on what the customer is saying rather than simply waiting for your turn to speak. It involves giving verbal acknowledgements such as 'I understand' or 'I can see why that would be frustrating', paraphrasing what the customer said to confirm understanding, and avoiding interruptions. In IT support, active listening prevents misdiagnosis — many tickets are reopened because the agent solved the wrong problem. Techniques include summarising the issue back to the customer, asking open-ended questions, and taking brief notes. Active listening is consistently rated as the number one soft skill in support job descriptions.",
+          "Incident management is the process of restoring normal service operation as quickly as possible after an unplanned interruption, minimising business impact. The lifecycle is: Detection → Logging → Categorisation → Prioritisation → Assignment → Investigation → Resolution → Closure → Review. Priority is based on impact (how many users affected) and urgency (how time-sensitive the fix is). An P1 incident might be all users unable to access email; a P3 might be one user's screensaver not working. The goal is fast restoration, not root cause analysis — that belongs to Problem Management.",
       },
       {
-        title: "Structuring your message: opening, body, close",
+        title: "Service Request Management",
         explanation:
-          "Whether you are on a call or sending an email, every professional message should follow a clear three-part structure. The opening sets context and greets the customer — introduce yourself and the purpose. The body is the core content — the information, steps, or resolution. The close summarises the next actions and invites questions. For example, on a support call: opening is your greeting and ticket acknowledgement, body is your troubleshooting steps and explanation, close is confirming the fix and asking if there is anything else. A structured message is easier for the customer to follow and reduces the chance of important details being missed.",
+          "Service requests are standard, pre-approved tasks that users request from IT — such as password resets, software installations, or new hardware provisioning. Unlike incidents, service requests do not involve service disruption; they fulfil agreed, expected needs. A well-designed service catalogue lists all available requests with clear fulfilment steps and timelines. Service request management improves efficiency by automating repetitive tasks, setting user expectations through SLAs, and freeing senior engineers from routine work. Well-categorised requests also generate data on what users need most, informing future IT planning.",
       },
       {
-        title:
-          "Email writing: subject line, greeting, concise body, professional sign-off",
+        title: "Problem Management",
         explanation:
-          "Professional email writing is a core skill in any IT or customer support role. A strong subject line is specific and actionable — for example 'Resolution Update: Ticket #4521 - VPN Access Issue' tells the reader exactly what to expect. The greeting should address the customer by name when possible. The body should be concise, broken into short paragraphs, and free of jargon. Use bullet points for steps or lists. The sign-off should include your name, role, and contact details. Avoid one-word replies, vague language, and informal abbreviations. A well-written email creates a paper trail and reflects the professionalism of your team.",
+          "Problem management addresses the root cause of incidents to prevent recurrence. While incident management restores service quickly, problem management digs deeper — identifying WHY the incident happened and implementing a permanent fix. A 'known error' is a problem with a documented workaround but no permanent fix yet. Problem management produces Root Cause Analysis (RCA) reports and drives changes through the Change Management process. For example, if 20 users report VPN dropouts (20 incidents), problem management investigates whether there's a firmware bug, network capacity issue, or configuration error as the root cause.",
       },
       {
-        title:
-          "Presentation basics: know your audience, clear slides, confident delivery",
+        title: "Change Management",
         explanation:
-          "In support and IT roles, you will sometimes need to present updates, solutions, or reports to managers, clients, or teams. The first rule is to know your audience — a technical team wants data and specifics, while a management audience wants business impact and summaries. Clear slides follow the one-idea-per-slide rule, use minimal text, and rely on visuals where possible. Confident delivery comes from preparation and practice — knowing your content removes the need to read from slides. Speak at a measured pace, maintain eye contact, and pause deliberately to let key points land. Confidence is built through repetition, not just talent.",
+          "Change management controls the lifecycle of all IT changes to minimise risk to services while enabling necessary improvements. All changes go through a Change Advisory Board (CAB) which reviews, approves, and schedules them. Change types include standard (pre-approved, low risk, e.g. password resets), normal (reviewed and approved before implementation), and emergency (urgent fixes to restore service, reviewed after). Proper change records document the change description, risk assessment, rollback plan, and implementation steps. Without change management, unplanned changes are the single largest cause of service outages in IT environments.",
       },
       {
-        title: "Avoiding jargon when speaking to non-technical users",
+        title: "ITIL Framework Overview",
         explanation:
-          "One of the most common mistakes in IT support is using technical language with customers who have no technical background. Terms like 'DNS propagation', 'BIOS reset', or 'registry key' mean nothing to an average user and can make them feel intimidated or dismissed. The skill is translating technical actions into plain language. Instead of 'I need to flush your DNS cache', say 'I need to clear some temporary network data on your computer.' This does not mean dumbing down — it means communicating with respect and clarity. Customers who understand what you are doing trust you more and cooperate better during troubleshooting.",
-      },
-      {
-        title: "Feedback and questioning techniques",
-        explanation:
-          "Asking the right questions is the fastest path to diagnosing and resolving an issue. Open-ended questions gather broad information — for example 'Can you describe what happens when you try to log in?' Closed questions confirm specific facts — 'Does the error appear before or after you enter your password?' Probing questions go deeper — 'When did this first start happening?' On the feedback side, giving constructive feedback to a teammate or receiving it professionally is equally important. In IT environments, teams hold regular retrospectives and knowledge-sharing sessions. Being able to give clear feedback and ask precise diagnostic questions are skills that separate good support agents from great ones.",
+          "ITIL (Information Technology Infrastructure Library) is the world's most widely adopted ITSM framework, providing best-practice guidance for IT service management. ITIL 4, the current version, organises service management around the Service Value System (SVS) — a holistic model showing how all components work together to deliver value. It includes four dimensions (organisations and people, information and technology, partners and suppliers, value streams) and 34 management practices. ITIL certifications (Foundation, Practitioner, Strategist, Leader) are industry-recognised credentials that improve career prospects in IT support and service management.",
       },
     ],
   },
   {
     id: 3,
-    title: "Voice & Accent Training",
+    title: "Technical Support Fundamentals",
+    level: "beginner",
     description:
-      "Clear pronunciation, neutral accent tips, and building confidence on calls.",
+      "Essential skills for troubleshooting, ticketing, remote support, documentation, and SLA management.",
     topics: [
       {
-        title: "Importance of clear pronunciation in support roles",
+        title: "Troubleshooting Methodology",
         explanation:
-          "In phone and voice-based support, your voice is your only tool. Clear pronunciation ensures that customers understand your instructions correctly the first time, reducing the need for repetition. Mispronouncing a technical term or company name can reduce your credibility and cause confusion, especially on important calls. In global IT support, where agents regularly speak with customers across different countries, neutral and clear pronunciation bridges language and cultural gaps. Clear pronunciation is not about erasing your accent — it is about speaking with enough clarity that your message is understood accurately by the widest possible audience, regardless of their background.",
+          "Effective troubleshooting follows a structured methodology rather than random guessing. The CompTIA approach: Identify the problem (gather information, ask questions), Establish a theory (consider the most probable causes), Test the theory (verify or eliminate it), Establish a plan of action (document the fix steps), Implement the solution, Verify full functionality, and Document the outcome. Always start with the simplest possible cause before moving to complex ones — this is called Occam's Razor in troubleshooting. Documenting your steps as you go enables faster escalation and helps build the team's knowledge base for future similar issues.",
       },
       {
-        title: "Neutral accent tips: slow down, enunciate, avoid filler words",
+        title: "Ticketing Systems",
         explanation:
-          "A neutral accent does not mean eliminating your mother tongue influence — it means reducing speech habits that create misunderstanding. Slowing down is the single most effective technique; most people speak significantly faster when nervous. Enunciation means clearly forming each syllable, particularly at the ends of words which are most commonly dropped. Filler words such as 'umm', 'like', 'you know', and 'basically' fill silence but reduce perceived professionalism. Replace fillers with a brief, deliberate pause. Record yourself during practice calls to identify problem patterns. Over time, consistent practice builds a natural, clear speaking style that works well in both voice support and interviews.",
+          "Ticketing systems are the backbone of IT support operations. They capture every user request or incident as a structured record including issue description, priority, category, assigned engineer, and resolution history. Common platforms include ServiceNow, Jira Service Management, Zendesk, Freshdesk, and BMC Remedy. A well-managed ticket includes: clear subject line, detailed description, reproduction steps, priority assignment, and time stamps. Proper ticket hygiene — regular updates, accurate categorisation, and complete closure notes — enables management reporting, SLA tracking, trend analysis, and knowledge base development that benefits the entire support team.",
       },
       {
-        title:
-          "Commonly mispronounced tech words (server, query, cache, SQL, GUI)",
+        title: "Remote Support Tools",
         explanation:
-          "Mispronouncing standard technology terms is a common issue for new IT professionals and can affect credibility. 'Cache' is pronounced 'cash' — not 'cash-ay'. 'SQL' is correctly said as 'sequel' in most professional environments. 'GUI' is pronounced 'gooey'. 'Query' is 'kweer-ee' — not 'kwery'. 'Server' is clear enough but often rushed as 'surver'. 'Router' is said as 'row-ter' in American English and 'root-er' in British English — be consistent. 'Virtual' is not 'vurchual'. Learning correct pronunciation of 20 to 30 core IT terms will make you sound confident and prepared in both customer interactions and technical interviews.",
+          "Remote support tools allow IT agents to view and control a user's computer without physically being present, dramatically improving resolution speed. Common tools include TeamViewer, AnyDesk, Microsoft Remote Desktop, and LogMeIn Rescue. Enterprise environments often use tools built into ITSM platforms like ServiceNow's Remote Support. Best practices include always obtaining user consent before connecting, explaining what you are doing during the session, never accessing files unrelated to the issue, and disconnecting promptly after resolution. Remote support is the standard first-line approach before any physical intervention is considered.",
       },
       {
-        title: "Breathing and speaking from the diaphragm",
+        title: "Documentation Best Practices",
         explanation:
-          "Breathing technique has a direct effect on voice quality and confidence during calls. Shallow chest breathing leads to a thin, high-pitched, or shaky voice — especially common when nervous. Diaphragmatic breathing (breathing from the belly, not the chest) produces a deeper, more resonant and controlled voice. To practice, place one hand on your stomach; when you breathe in, your stomach should expand, not your chest. This type of breathing also helps regulate anxiety and keeps your pace steady during long calls. Support agents who speak from the diaphragm sound more authoritative, calm, and professional — qualities that reassure customers during stressful support situations.",
+          "Good documentation is what separates a capable individual contributor from a team asset. In IT support, documentation includes knowledge base articles, runbooks, network diagrams, configuration records, and post-incident reports. Effective documentation is specific (exact error messages, steps taken), current (updated when processes change), searchable (clear titles and tags), and actionable (anyone with basic skills can follow it). Every resolved ticket should include a clear resolution note — this builds a searchable knowledge base that reduces repeat ticket volume and enables faster onboarding of new team members.",
       },
       {
-        title: "Warm-up exercises for voice clarity",
+        title: "Escalation Procedures",
         explanation:
-          "Professional voice users — including support agents, presenters, and trainers — warm up their voice before speaking, just as athletes warm up their body before exercise. Simple warm-ups include humming gently for 30 seconds to loosen vocal cords, tongue twisters like 'red lorry yellow lorry' repeated quickly to improve articulation, and jaw stretches to reduce tension. Reading a paragraph aloud before starting your shift helps activate your speech muscles. Lip trills (making a 'brr' sound with your lips) loosen mouth muscles. These exercises take 3 to 5 minutes and noticeably improve the clarity, energy, and confidence of your voice throughout the working day.",
+          "Escalation is the structured transfer of an issue to a higher-level team or specialist when the current agent cannot resolve it within their skill level, tools, or authority. You should escalate when you have exhausted your troubleshooting steps, the SLA is at risk of breach, the issue requires specialist system access, or the customer insists on speaking with a manager. A good escalation handover includes: ticket number, customer name, issue description, steps already tried, and urgency level. Avoid escalating prematurely — it wastes senior time and lowers first-call resolution rates. Escalate with context, never without it.",
       },
       {
-        title: "Handling calls with background noise",
+        title: "SLA Understanding",
         explanation:
-          "Background noise is one of the most common complaints customers have about support calls. The first rule is prevention — use a quality headset with noise cancellation, and work in the quietest space available. If unexpected noise occurs during a call, acknowledge it professionally: 'I apologise for the noise in the background, let me move somewhere quieter.' Use the mute button when you are listening and not speaking. If the customer has significant background noise, politely ask them to move to a quieter space: 'I'm having a little difficulty hearing you clearly — would you be able to step somewhere quieter?' Managing noise professionally maintains call quality and customer confidence.",
-      },
-      {
-        title: "Building confidence on calls",
-        explanation:
-          "Call confidence is not a personality trait — it is a skill that develops through preparation and repetition. The biggest source of confidence on support calls is product and process knowledge; when you know your material well, you do not hesitate. Practical preparation includes role-playing common scenarios with colleagues, listening back to recorded calls for self-review, and keeping a quick-reference cheat sheet for common issues and scripts. Speak with deliberate energy — energy on the phone is calming and professional, not loud. Smile while you speak; it genuinely changes your tone. Every call you handle, including the difficult ones, builds the confidence you carry into the next.",
+          "A Service Level Agreement (SLA) is a formal contract between the IT team and the business (or between a vendor and a client) that defines expected service targets. Key SLA metrics include Response Time (how quickly you acknowledge the ticket), Resolution Time (how quickly you close it), and Availability (e.g. 99.9% uptime). Priority levels (P1–P4) define different SLA timelines — P1 incidents typically require a 15-minute response and 4-hour resolution. Breaching SLAs consistently results in financial penalties, contract reviews, and damaged client trust. Tracking SLA compliance is a daily responsibility for all support agents.",
       },
     ],
   },
   {
     id: 4,
-    title: "Customer Handling & Empathy",
+    title: "Windows Operating System",
+    level: "intermediate",
     description:
-      "Empathy vs sympathy, the LEAP model, and de-escalation techniques.",
+      "Windows administration, Active Directory, Group Policy, Registry, and event log troubleshooting.",
     topics: [
       {
-        title: "What is empathy vs sympathy in support contexts",
+        title: "Windows Architecture",
         explanation:
-          "Empathy and sympathy are often confused but are fundamentally different in customer support. Sympathy is feeling sorry for someone from a distance — 'That sounds terrible, I'm sorry to hear that.' Empathy is stepping into the customer's shoes and acknowledging their specific experience — 'I can completely understand how disruptive it must be to lose access to your system right before a meeting.' Empathy is significantly more effective in support because it makes the customer feel genuinely heard rather than just acknowledged. It reduces the emotional temperature of the interaction and creates a collaborative tone. Practising empathetic responses in your daily language is a skill that improves measurably over time.",
+          "Windows is built on a layered architecture with two core modes: User Mode (where applications run with limited hardware access) and Kernel Mode (where the OS core and drivers run with full hardware access). The Windows NT kernel handles memory management, process scheduling, security, and I/O operations. Key components include the Hardware Abstraction Layer (HAL), executive services (I/O Manager, Security Reference Monitor, Object Manager), and the Win32 subsystem for running applications. Understanding this architecture helps diagnose whether an issue is application-level (user mode crash) or system-level (kernel panic / Blue Screen of Death).",
       },
       {
-        title: "The LEAP model: Listen, Empathize, Apologize, Problem-solve",
+        title: "Active Directory Basics",
         explanation:
-          "The LEAP model is a structured approach to handling difficult customer interactions. Listen means giving the customer your full, uninterrupted attention while they describe their issue. Empathize means acknowledging their feelings authentically — not with scripted phrases, but with genuine understanding. Apologize is taking responsibility on behalf of the service without admitting personal fault — 'I'm sorry this experience has been frustrating.' Problem-solve is moving into action mode with a clear plan. The value of LEAP is that it addresses both the emotional and practical dimensions of a complaint. Customers need to feel heard before they are ready to accept a solution. Skipping the first three steps leads to resistance.",
+          "Active Directory (AD) is Microsoft's directory service for managing users, computers, and resources in a Windows domain environment. It stores information about objects (users, groups, computers, printers) in a hierarchical structure of Domains, Organisational Units (OUs), and Forests. Key concepts: Domain Controller (DC) authenticates users; LDAP is the protocol AD uses; Kerberos handles authentication tickets. Common IT support tasks include resetting passwords, unlocking accounts, adding users to groups, and joining computers to the domain. AD is fundamental to enterprise IT — virtually every corporate Windows environment relies on it for access control and authentication.",
       },
       {
-        title: "De-escalation techniques for angry customers",
+        title: "Group Policy",
         explanation:
-          "De-escalation is the skill of reducing the emotional intensity of a difficult interaction before attempting to resolve the technical issue. Key techniques include lowering your own voice slightly (a calm voice is contagious), using the customer's name, and never responding to anger with defensiveness. Phrases like 'I completely understand your frustration and I'm going to do everything I can to help you right now' redirect focus from emotion to action. Avoid telling an angry customer to calm down — it typically has the opposite effect. Give the customer a sense of control by explaining exactly what you will do and when. Resolution begins only when the emotional temperature drops.",
+          "Group Policy Objects (GPOs) allow administrators to manage settings for users and computers across an entire Active Directory domain from a central location. Policies can enforce password complexity requirements, deploy software, map network drives, configure firewall rules, and restrict access to specific applications or settings. GPOs are applied in this order: Local → Site → Domain → OU (LSDOU). Use `gpresult /r` to see which policies are applied to a user or computer, and `gpupdate /force` to immediately refresh policies. Understanding Group Policy is essential for system administrators managing Windows environments at any scale.",
       },
       {
-        title: "Staying calm under pressure",
+        title: "Windows Registry",
         explanation:
-          "Support roles, especially at service desk level, involve sustained emotional labour — handling frustrated, confused, and sometimes hostile customers throughout the day. Staying calm under pressure is both a mindset and a set of practical techniques. Controlled breathing (slow exhale before responding) prevents reactive replies. Mental reframing helps — remembering that a customer's anger is directed at the problem, not at you personally. Taking a 30-second reset between difficult calls prevents emotional carryover. Recognising your own stress signals (tension in shoulders, faster breathing, clipped speech) early allows you to course-correct before it affects the call. Teams that manage stress well have lower turnover and higher CSAT scores.",
+          "The Windows Registry is a hierarchical database that stores configuration settings for the operating system, applications, and hardware. It is organised into Hives (HKEY_LOCAL_MACHINE for system-wide settings, HKEY_CURRENT_USER for per-user settings, HKEY_CLASSES_ROOT for file associations). Registry keys store data as Values in types including REG_SZ (string), REG_DWORD (number), and REG_BINARY (binary data). Always back up the registry before editing — incorrect changes can render Windows unbootable. Use Regedit.exe for manual editing or PowerShell for scripted changes. Many application issues, autostart programs, and file associations are controlled through Registry entries.",
       },
       {
-        title: "Avoiding defensive language",
+        title: "Event Viewer and Logs",
         explanation:
-          "Defensive language is any response that shifts blame, minimises the customer's concern, or creates an adversarial dynamic. Examples include 'That's not our fault', 'You should have read the manual', 'There's nothing I can do about that', or 'That's our policy.' These phrases feel dismissive and escalate rather than resolve. Replace them with ownership-based language: instead of 'That's not my department', say 'Let me connect you with the right team and make sure they have all the details.' Instead of 'I can't do that', say 'What I can do is...' followed by an alternative. Language choices have a direct and measurable impact on customer satisfaction scores.",
+          "Windows Event Viewer (eventvwr.msc) is the primary diagnostic tool for Windows issues, recording Application, Security, System, and Setup events. Each log entry has an Event ID, Source, Level (Information, Warning, Error, Critical), and detailed description. Critical IDs to know: Event ID 41 (unexpected shutdown), 4624/4625 (logon success/failure), 7034 (service crashed), 6008 (dirty shutdown). The Security log records all logon events and is crucial for security auditing. Use Windows PowerShell's `Get-EventLog` or `Get-WinEvent` cmdlets to filter and export logs. Event logs are the first place to look when diagnosing unexpected Windows behaviour.",
       },
       {
-        title: "Phrases to use and avoid",
+        title: "Common Windows Issues",
         explanation:
-          "Certain phrases consistently improve customer interactions, while others consistently damage them. Use phrases such as: 'I completely understand', 'Let me look into that for you right away', 'Here is what I'm going to do', 'Is there anything else I can help you with?', and 'Thank you for your patience.' Avoid phrases such as: 'Calm down', 'As I already explained', 'That's not possible', 'It's not my fault', and 'You should have...' The difference between good and average support agents often comes down to these language choices. A phrase list pinned at your workstation for the first few months of your role can significantly accelerate your confidence and CSAT scores.",
-      },
-      {
-        title: "Building rapport quickly",
-        explanation:
-          "Rapport is the sense of connection and trust that makes customers feel comfortable and cooperative during a support interaction. In a short call, rapport is built within the first 30 seconds. Using the customer's name (once confirmed) immediately personalises the interaction. Matching the customer's communication style — more casual with relaxed callers, more formal with serious ones — creates alignment. A brief moment of genuine human connection, such as acknowledging a customer who mentions it is their first day or that they are in a hurry, signals that you see them as a person rather than a ticket number. Rapport does not take extra time — it simply requires attention and intent.",
+          "IT support professionals regularly encounter a core set of Windows problems. Blue Screen of Death (BSOD) crashes — check minidump files in C:WindowsMinidump and the associated stop codes. Slow performance — check Task Manager for CPU/RAM/disk usage; SFC /scannow repairs corrupted system files. Windows Update failures — clear the SoftwareDistribution folder and restart the Update service. Profile corruption — create a new local profile and migrate data. Network connectivity issues — use ipconfig, ping, nslookup and tracert for diagnosis. Mastering these common scenarios covers approximately 80% of real-world Windows support tickets.",
       },
     ],
   },
   {
     id: 5,
-    title: "Windows Technical Support",
+    title: "Networking Fundamentals",
+    level: "intermediate",
     description:
-      "Troubleshooting Windows PCs, remote tools, and user account management.",
+      "OSI model, TCP/IP, DNS, DHCP, VPN, firewall concepts, and network troubleshooting techniques.",
     topics: [
       {
-        title: "Windows versions overview: Windows 10 vs 11",
+        title: "OSI Model",
         explanation:
-          "Windows 10, released in 2015, remains the most widely deployed version in corporate environments due to its stability and broad hardware compatibility. Windows 11, released in 2021, introduced a redesigned interface, improved multi-tasking (Snap Layouts), and stricter hardware requirements including TPM 2.0 and Secure Boot. In a support role, you will encounter both versions regularly. Key differences relevant to support include the location of settings menus (significantly reorganised in Windows 11), new taskbar behaviour, and DirectX 12 Ultimate support. Knowing both versions allows you to provide accurate guidance without asking the customer to navigate to settings that do not exist in their version.",
+          "The OSI (Open Systems Interconnection) model is a conceptual framework that divides network communication into 7 layers: Physical (cables, signals), Data Link (MAC addresses, switches), Network (IP addresses, routers), Transport (TCP/UDP, port numbers), Session (connection management), Presentation (encryption, compression), and Application (HTTP, SMTP, DNS). In troubleshooting, you work from the bottom up — first confirm physical connectivity (Layer 1), then check if the network is reachable (Layer 3), then verify the application is responding (Layer 7). The OSI model is the universal language of networking, referenced in every network interview and troubleshooting conversation.",
       },
       {
-        title: "Common issues: slow PC, boot failures, blue screen (BSOD)",
+        title: "TCP/IP Protocol",
         explanation:
-          "Three of the most frequently reported Windows issues are slow performance, boot failures, and blue screen errors. A slow PC is typically caused by high CPU or RAM usage (check Task Manager), too many startup programs, or insufficient storage space. Boot failures can result from corrupted Windows files (use Startup Repair from the recovery environment), failed updates, or hardware faults. A BSOD (Blue Screen of Death) displays a stop error code — common codes include SYSTEM_SERVICE_EXCEPTION and IRQL_NOT_LESS_OR_EQUAL. The stop code helps identify whether the cause is a driver, hardware, or software issue. Always check the Event Viewer after a BSOD for detailed error logs.",
+          "TCP/IP is the foundational protocol suite of the internet and all modern networks. TCP (Transmission Control Protocol) is connection-oriented — it establishes a three-way handshake (SYN, SYN-ACK, ACK) before data transfer, guaranteeing delivery and order. UDP (User Datagram Protocol) is connectionless — faster but without delivery guarantees, used for streaming and gaming. IP addressing uses 32-bit addresses (IPv4) like 192.168.1.100 with subnet masks defining network segments. Key commands: `ipconfig` (Windows) / `ifconfig` (Linux) show IP configuration; `ping` tests connectivity; `tracert` / `traceroute` traces the route to a destination.",
       },
       {
-        title:
-          "Troubleshooting steps: Event Viewer, Task Manager, Device Manager",
+        title: "DNS and DHCP",
         explanation:
-          "Windows provides three essential built-in tools for diagnosing issues. Event Viewer (eventvwr.msc) logs system, application, and security events — error entries with red X icons indicate what failed and when, which is critical for diagnosing intermittent or post-crash issues. Task Manager (Ctrl+Shift+Esc) shows real-time CPU, memory, disk, and network usage — use the Startup tab to disable unnecessary programs. Device Manager (devmgmt.msc) shows all connected hardware and highlights devices with driver errors (yellow warning triangles). These three tools together can diagnose the majority of Windows issues without needing third-party software. Memorising their keyboard shortcuts and navigation saves significant time on support calls.",
+          "DNS (Domain Name System) translates human-readable domain names (like www.google.com) into IP addresses that computers use. Without DNS, you'd need to remember IP addresses for every website. DNS resolution goes: browser cache → OS cache → DNS resolver → Root servers → TLD servers → Authoritative server. DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses, subnet masks, default gateways, and DNS server addresses to devices on a network. Common issues: DNS cache poisoning, DHCP scope exhaustion (no more IPs to assign), and DNS resolution failures. Commands: `nslookup` tests DNS, `ipconfig /flushdns` clears the DNS cache.",
       },
       {
-        title: "Remote support tools: RDP, Quick Assist, TeamViewer",
+        title: "VPN Basics",
         explanation:
-          "Remote support tools allow technicians to view and control a user's computer without being physically present. RDP (Remote Desktop Protocol) is built into Windows and is the standard method for connecting to remote servers and computers within a corporate network — access it by typing 'mstsc' in the Run dialog. Quick Assist (built into Windows 10/11) allows a support agent to send a 6-digit code to a user, enabling remote control with the user's permission — ideal for end-user support. TeamViewer is a third-party tool used for external or cross-platform support. Understanding when to use each tool, and how to guide a non-technical user through sharing access, is a core IT support competency.",
+          "A VPN (Virtual Private Network) creates an encrypted tunnel between a user's device and a corporate network, allowing secure remote access as if the user were physically in the office. Split tunneling routes only corporate traffic through the VPN while other traffic goes directly to the internet. Common VPN protocols include OpenVPN, IKEv2/IPsec, L2TP/IPsec, and WireGuard. Enterprise VPN solutions include Cisco AnyConnect, Palo Alto GlobalProtect, and Fortinet FortiClient. Common VPN support issues include certificate errors, authentication failures, split-tunnel configuration problems, and DNS resolution issues when connected. VPN troubleshooting is a daily task in any corporate IT support role.",
       },
       {
-        title: "User account management: local vs domain accounts",
+        title: "Network Troubleshooting",
         explanation:
-          "Windows supports two types of user accounts. A local account is stored directly on the machine and has no connection to a central network — suitable for standalone home computers but impractical in corporate environments. A domain account is managed centrally through Active Directory and allows the user to log into any domain-joined machine using the same credentials. In corporate IT, virtually all user accounts are domain accounts. As a support agent, common account tasks include unlocking accounts, resetting passwords, checking group membership, and managing account expiry — all performed in Active Directory Users and Computers (ADUC). Understanding the distinction prevents confusion when a user's login issue is a domain problem, not a local one.",
+          "Systematic network troubleshooting follows a top-down or bottom-up approach using the OSI model. Essential commands: `ping` tests basic connectivity; `tracert`/`traceroute` identifies where packets are lost; `nslookup` tests DNS resolution; `netstat -an` shows active connections and listening ports; `ipconfig /all` shows full IP configuration; `arp -a` shows the ARP cache mapping IPs to MACs. Common scenarios: No network access (check IP assignment and gateway); intermittent drops (check for duplex mismatch, cable issues, or DHCP lease problems); slow performance (check for packet loss, bandwidth saturation, or DNS delays). Document every step for escalation.",
       },
       {
-        title: "Windows Update issues and fixes",
+        title: "Firewall Concepts",
         explanation:
-          "Windows Update is critical for security patches and feature improvements, but it is also a common source of support tickets. Typical issues include updates stuck at a percentage, update failures with error codes, or system slowness after a large update. First troubleshooting steps include running the Windows Update Troubleshooter (Settings > Update & Security > Troubleshoot), clearing the SoftwareDistribution folder (which stores downloaded updates), or using the System File Checker command 'sfc /scannow' to repair corrupted files. For persistent failures, the DISM tool ('DISM /Online /Cleanup-Image /RestoreHealth') repairs the Windows image itself. Document error codes carefully, as Microsoft's support database uses them to provide specific resolution steps.",
-      },
-      {
-        title: "Printer and peripheral setup in Windows",
-        explanation:
-          "Adding a printer or peripheral in Windows involves either a plug-and-play process for USB devices or a manual network setup for shared printers. For USB devices, Windows typically installs drivers automatically via Windows Update. For network printers, you add the printer via Settings > Printers & Scanners > Add a device, or manually through 'Add a printer using a TCP/IP address or hostname' if auto-discovery fails. Driver issues are the most common cause of printer problems — always check Device Manager for warning indicators. For corporate environments, printers are often deployed via Group Policy to all users in a specific OU, which means setup issues may require AD access rather than local configuration.",
+          "Firewalls control incoming and outgoing network traffic based on rules — they are the first line of defence for any network. Stateful firewalls track the state of active connections and allow return traffic for established sessions. Application-layer firewalls (next-gen firewalls) can inspect traffic at Layer 7, blocking specific applications or content. Key concepts: allow/deny rules, port-based filtering, DMZ (demilitarised zone for public-facing servers), NAT (Network Address Translation for private IP mapping). In IT support, firewall rules are often the reason why a user cannot access a specific application or website. Always check firewall logs before concluding an application is broken.",
       },
     ],
   },
   {
     id: 6,
-    title: "Mac Technical Support",
+    title: "Hardware and Peripherals",
+    level: "beginner",
     description:
-      "macOS diagnostics, FileVault, Terminal basics, and hardware essentials.",
+      "Desktop and laptop components, printer and router setup, monitor troubleshooting, and peripheral support.",
     topics: [
       {
-        title: "macOS versions and update process",
+        title: "Desktop Components",
         explanation:
-          "Apple releases a new major version of macOS annually, each named after a California location — for example Ventura, Sonoma, and Sequoia. Unlike Windows, macOS updates are distributed entirely through the App Store or System Preferences > Software Update, and are free. In enterprise environments, updates are often controlled by Mobile Device Management (MDM) systems like Jamf to prevent users from installing untested versions. As a support agent, knowing the current stable macOS release and the one prior is important because many issues are introduced during major version upgrades. Always confirm the macOS version first in a support call using 'About This Mac' from the Apple menu.",
+          "Understanding desktop hardware is fundamental to IT support. Core components: CPU (Central Processing Unit) — the brain of the computer, executing instructions; RAM (Random Access Memory) — temporary storage for active processes (4–32 GB typical); HDD/SSD — permanent storage (SSD is 10x faster than HDD); GPU (Graphics Processing Unit) — renders video output; PSU (Power Supply Unit) — converts AC mains to DC power; Motherboard — connects all components. Common hardware failures: RAM errors (blue screens, random crashes), HDD failure (clicking noises, slow performance), PSU failure (random shutdowns). Use tools like CrystalDiskInfo for disk health and MemTest86 for RAM diagnostics.",
       },
       {
-        title: "Common issues: spinning wheel, app crashes, login issues",
+        title: "Laptop Troubleshooting",
         explanation:
-          "The spinning colour wheel (colloquially the 'beachball') in macOS indicates that an application or the system is unresponsive — it is the macOS equivalent of Windows' 'not responding' state. It is typically caused by an application using excessive CPU or RAM. Force quitting (Cmd+Option+Esc) resolves most cases. App crashes on macOS generate a crash report that can be found in the Console app, providing detail on the fault. Login issues are often caused by corrupted user profiles, MDM policy changes, or FileVault encryption requiring recovery. Knowing where to find crash logs and how to boot into Safe Mode (hold Shift at startup) is essential for diagnosing macOS issues systematically.",
+          "Laptops present unique support challenges due to their compact design and battery dependency. Common issues: Battery not charging — check power adapter, charging port, and battery health via manufacturer diagnostics. Overheating — clean vents with compressed air; check whether thermal paste needs replacing; use throttlestop or similar tools to monitor temps. Screen issues — check for loose LCD cable (often flickering or dead display), test with external monitor to isolate GPU vs panel. Keyboard failures — check for debris, test in BIOS; wireless keyboard issues might be driver-related. Always check manufacturer documentation for disassembly procedures — laptops vary significantly in repairability.",
       },
       {
-        title: "Disk Utility, Activity Monitor, Console for diagnostics",
+        title: "Printer Setup and Troubleshooting",
         explanation:
-          "macOS provides three essential built-in diagnostic tools. Disk Utility (Applications > Utilities) manages disks and volumes — use 'First Aid' to check and repair disk errors, especially after an unexpected shutdown. Activity Monitor is the macOS equivalent of Windows Task Manager — it shows CPU, memory, energy, disk, and network usage in real time and allows you to force-quit unresponsive processes. Console is the macOS log viewer, showing system and application logs in real time — critical for diagnosing crashes and intermittent errors. Knowing how to navigate these three tools gives you diagnostic capability covering most macOS hardware and software issues without installing third-party applications.",
+          "Printer support is one of the most common IT helpdesk requests. Setup involves installing the correct driver (from manufacturer website or Windows Update), configuring the IP address for network printers, and adding the printer via Windows Settings or Control Panel. Common issues: Print jobs stuck in queue — clear the print spooler (services.msc, stop Print Spooler, delete files in C:WindowsSystem32spoolPRINTERS, restart service). Driver conflicts — uninstall and reinstall drivers. Offline status — check network connectivity and printer IP. Paper jams — follow manufacturer clearing procedures. For enterprise environments, printers are deployed via Group Policy.",
       },
       {
-        title: "FileVault, Time Machine, iCloud basics",
+        title: "Router Configuration",
         explanation:
-          "These three macOS features are frequently referenced in support tickets. FileVault is Apple's full-disk encryption tool, activated in System Preferences > Security & Privacy. When enabled, the startup disk is encrypted and a recovery key is generated — losing this key can make data permanently inaccessible. Time Machine is macOS's built-in backup solution, creating incremental backups to an external drive. It allows file-level or full system recovery. iCloud provides Apple's cloud storage and synchronisation service — commonly causing support issues when storage is full, sync conflicts occur, or users change Apple IDs. Understanding all three allows you to support Mac users confidently in both personal and corporate environments.",
+          "Routers direct network traffic between different networks — typically between a home/office network and the internet. Basic router configuration involves: accessing the admin interface (usually 192.168.0.1 or 192.168.1.1), setting the SSID and wireless password, configuring DHCP range, enabling/disabling NAT, setting up port forwarding for specific services, and updating firmware. Common issues: Cannot access admin panel — check default IP, try factory reset. No internet — check WAN settings and ISP credentials. Slow Wi-Fi — check channel congestion (use Wi-Fi analyser app), update firmware, or change frequency band from 2.4 GHz to 5 GHz for faster speeds.",
       },
       {
-        title: "Terminal basics for support tasks",
+        title: "Monitor Issues",
         explanation:
-          "Terminal is the macOS command-line interface, found in Applications > Utilities. For support tasks, a small set of commands handles the majority of needs. 'sudo' runs commands with administrator privileges. 'ls' lists directory contents. 'cd' changes directories. 'ping' tests network connectivity. 'top' shows running processes (similar to Activity Monitor in text form). 'killall [app name]' force-quits an application. 'defaults write' modifies application preferences. 'diskutil list' shows all connected drives. Unlike Windows, macOS is Unix-based, so Terminal is powerful and capable. Entry-level Mac support does not require advanced scripting, but comfort with basic commands significantly speeds up diagnosis and resolution.",
+          "Monitor troubleshooting covers display hardware and display settings. No signal — swap cable, test with another monitor, check GPU seating in desktop. Flickering display — check refresh rate (should match monitor's spec, e.g. 60 Hz or 144 Hz), check for damaged cable, test with different cable type (HDMI vs DisplayPort). Resolution issues — update GPU drivers, check display adapter settings. Discolouration or dead pixels — manufacturer warranty claim territory. Dual monitor setup problems — check if second monitor is detected in Display Settings; set correct arrangement and primary display. For laptops, use Fn + display key (e.g. Fn+F8) to switch between display modes.",
       },
       {
-        title: "Printer setup and sharing on Mac",
+        title: "Keyboard and Mouse Issues",
         explanation:
-          "Adding a printer on macOS is done through System Preferences > Printers & Scanners. For USB printers, macOS typically auto-detects and installs the driver. For network printers, you can add them via IP address using the 'IP' tab and selecting the appropriate protocol (usually IPP or LPD). AirPrint-compatible printers connect wirelessly without manual driver installation. Printer sharing allows a Mac to share a connected USB printer with other devices on the same network — enabled through the Sharing preference pane. Common issues include drivers not loading after macOS updates (requiring a re-add or driver reinstall from the manufacturer's website) and queue stuck jobs requiring a print system reset.",
-      },
-      {
-        title: "MacBook hardware basics: ports, adapters, battery",
-        explanation:
-          "Modern MacBooks have progressively reduced the number of physical ports. Current MacBook Air and Pro models primarily use USB-C (Thunderbolt 4) ports, requiring adapters or hubs for HDMI, USB-A, SD cards, and Ethernet. Knowing which adapter is required for which task is common in MacBook support. Battery health on macOS is tracked in System Information > Power — Apple recommends replacing the battery when cycle count exceeds 1000. MagSafe (on newer MacBook Pros and Airs) is the magnetic charging connector. Common hardware support queries include display output issues (often an adapter or resolution setting), charging problems (check for debris in port or reset SMC), and keyboard/trackpad issues (often resolved by SMC or NVRAM reset).",
+          "Keyboard and mouse issues are among the simplest but most common hardware calls. Wired keyboard/mouse not responding — swap USB port, try USB 2.0 vs 3.0, check Device Manager for errors, uninstall and reinstall HID drivers. Wireless keyboard/mouse not responding — check batteries, resync the USB receiver (hold pair button), check Bluetooth settings for Bluetooth models. Sticky or unresponsive keys — compressed air for debris, isopropyl alcohol for sticky residue. Mouse cursor jumping or lagging — clean optical sensor, replace mouse pad, update mouse drivers. Always check if the issue persists in a different application or at the BIOS/UEFI level to isolate hardware from software causes.",
       },
     ],
   },
   {
     id: 7,
-    title: "Printers & Peripherals",
+    title: "Mac OS Support",
+    level: "intermediate",
     description:
-      "Printer types, setup, common errors, and peripheral troubleshooting.",
+      "Mac OS architecture, common issues, Terminal basics, security, Time Machine, and AD integration.",
     topics: [
       {
-        title: "Types of printers: laser vs inkjet, local vs network",
+        title: "Mac OS Architecture",
         explanation:
-          "Understanding printer types helps you troubleshoot and recommend correctly. Laser printers use heat and toner powder to produce sharp, high-volume prints — common in offices due to lower per-page cost and faster output. Inkjet printers use liquid ink and are better for photo-quality colour printing but have higher per-page costs and are prone to clogged nozzles if unused. Local printers connect directly to a single computer via USB. Network printers connect to the office network via Ethernet or Wi-Fi, allowing multiple users to print without a physical connection. In corporate support, you will mostly deal with network laser printers, which introduce additional layers of setup involving IP addresses and print servers.",
+          "macOS is built on Darwin, a Unix-based foundation using the XNU kernel (a hybrid of Mach microkernel and BSD components). The architecture includes: the kernel layer (hardware management, memory, processes), Core OS and Core Services layers (security framework, networking, file systems), Media and Application layers (QuickTime, AppKit, Cocoa). The file system uses APFS (Apple File System) on modern Macs — designed for SSDs with features like snapshots, space sharing, and strong encryption. Unlike Windows, macOS uses a Unix permission model with users and groups. System resources are in /System (read-only on macOS Catalina+) and user files in ~/Library.",
       },
       {
-        title: "Setting up a printer on Windows and Mac",
+        title: "Common Mac Issues",
         explanation:
-          "On Windows, printer setup is done through Settings > Bluetooth & Devices > Printers & Scanners > Add a device. For network printers not automatically detected, use 'Add manually' and enter the printer's IP address. Drivers may be installed automatically via Windows Update or manually from the manufacturer's website. On macOS, go to System Preferences > Printers & Scanners and click the '+' button. AirPrint printers are detected automatically on the same Wi-Fi network. For IP-based network printers on Mac, use the IP tab and select IPP as the protocol. Always test with a print page after setup. In corporate environments, printers are often pushed automatically via Group Policy or MDM to avoid manual setup.",
+          "Frequent macOS support calls include: Spinning beach ball (overloaded CPU or RAM — check Activity Monitor, identify high-usage process, force quit if necessary). Cannot install app — check Security & Privacy settings; unsigned apps require approval. Keychain errors — lock/unlock Keychain, or reset login keychain from Keychain Access. Wi-Fi dropping — create a new network location, delete Wi-Fi preference files from /Library/Preferences/SystemConfiguration. App crashes — check Console.app for crash logs; reinstall application. macOS update failing — boot to Recovery Mode, run Disk Utility First Aid, reinstall macOS. Apple-specific knowledge is increasingly valuable as organisations move to mixed Windows/Mac environments.",
       },
       {
-        title: "Common printer errors: offline, paper jam, driver issues",
+        title: "Terminal Basics",
         explanation:
-          "Three printer errors dominate support queues. 'Printer offline' is the most frequent — it occurs when Windows loses communication with the printer, often due to a network change, IP address conflict, or a stuck print queue. Fix it by right-clicking the printer in Settings, selecting 'See what's printing', and clearing the queue, then setting the printer back online. Paper jams require physically removing all jammed paper carefully to avoid tearing — never force it. Always check all accessible panels and trays. Driver issues appear as print jobs completing on the computer but nothing printing, or incorrect output — resolve by uninstalling and reinstalling the latest driver from the manufacturer's website.",
+          "The Terminal app gives access to macOS's Unix underpinning via command line. Essential commands: `ls -la` (list all files with permissions), `cd` (change directory), `sudo` (run as administrator), `ps aux` (list all running processes), `kill -9 [PID]` (force quit a process), `top` (real-time system resource monitor), `diskutil list` (list all disks and partitions), `defaults write` (modify app preferences), `caffeinate` (prevent sleep). For IT support, Terminal is used for tasks that have no GUI option: clearing caches, modifying hidden files, running scripts, and diagnosing network issues with `ping`, `traceroute`, and `nslookup`.",
       },
       {
-        title: "Network printer setup and IP configuration",
+        title: "FileVault and Security",
         explanation:
-          "Network printers communicate with computers using IP addresses, and knowing how to configure and troubleshoot this is essential. Every network printer should be assigned a static IP address (not DHCP) to prevent its address from changing and breaking connections for all users. This is configured in the printer's onboard menu or through its embedded web interface — accessed by entering the printer's IP into a browser. When adding the printer on a workstation, you connect by IP address directly or via a print server hostname. If users suddenly cannot print after a network change, the printer's IP may have changed — verify by printing a configuration page from the printer itself, which lists the current IP.",
+          "FileVault is macOS's full-disk encryption feature, using XTS-AES-128 encryption to protect all data on the startup disk. When enabled, data is encrypted at rest and requires the user password (or recovery key) to decrypt at boot. For IT management, FileVault can be managed via MDM (Mobile Device Management) solutions like Jamf, allowing recovery keys to be stored centrally. macOS also includes Gatekeeper (controls which apps can run based on developer signing), System Integrity Protection/SIP (prevents root-level modifications to system files), and Secure Enclave (on Apple Silicon Macs for biometric data and encryption keys). These security features significantly reduce the malware risk compared to Windows.",
       },
       {
-        title: "Peripheral types: keyboards, mice, monitors, webcams",
+        title: "Time Machine Backup",
         explanation:
-          "Peripherals are devices that connect to a computer to extend its capabilities. Input peripherals include keyboards and mice (wired USB or wireless Bluetooth/RF). Output peripherals include monitors (connected via HDMI, DisplayPort, USB-C, or VGA). Communication peripherals include webcams and headsets, heavily used in remote and hybrid work environments. In IT support, peripheral issues are extremely common. Monitors not detected, mice not pairing, and webcams not appearing in video call apps are all frequent tickets. The first diagnostic step for most peripheral issues is to try a different USB port or cable — the majority of issues are physical connection or driver related rather than hardware failure.",
+          "Time Machine is macOS's built-in backup solution, automatically creating incremental backups to an external drive or network volume (NAS) every hour. It retains hourly backups for 24 hours, daily backups for a month, and weekly backups until the drive is full. To restore: boot to Recovery Mode (hold Cmd+R at startup) and select Restore from Time Machine Backup, or browse backups through the Time Machine interface for individual file recovery. For enterprise environments, Time Machine is often supplemented by cloud backup solutions (Backblaze, CrashPlan) or centralised NAS-based backups. Always verify backup health before an issue occurs — a backup that has never been tested is not a backup.",
       },
       {
-        title: "USB vs Bluetooth devices: pairing and troubleshooting",
+        title: "Mac Active Directory Integration",
         explanation:
-          "USB devices connect through a physical cable and are generally plug-and-play — Windows and macOS install drivers automatically for most standard devices. Troubleshooting involves checking if the device is recognised in Device Manager (Windows) or System Information (Mac). Bluetooth devices require pairing — on Windows, this is done through Settings > Bluetooth & Devices; on Mac, through System Preferences > Bluetooth. Common Bluetooth issues include devices not appearing during pairing (ensure the device is in pairing mode), connection drops (interference from other Bluetooth devices or distance), and devices connecting to the wrong computer. Unpairing and re-pairing resolves most Bluetooth issues. USB hubs can cause issues if they are not externally powered and lack sufficient current.",
-      },
-      {
-        title: "Driver installation and Windows Device Manager",
-        explanation:
-          "A driver is software that allows the operating system to communicate with a hardware device. Without the correct driver, a device may not function at all or may work with limited capability. Device Manager (devmgmt.msc) is the central tool for managing hardware drivers in Windows. Devices with driver problems are flagged with a yellow triangle. Right-clicking a device allows you to update, roll back, disable, or uninstall its driver. For updates, Windows can search automatically, or you can download the driver directly from the manufacturer's website. After a Windows major update, driver compatibility issues are common — always check Device Manager after a major update if users report peripheral problems.",
+          "macOS can join Windows Active Directory domains, enabling centrally-managed authentication and access to network resources. Joining is done via System Preferences → Users & Groups → Login Options → Network Account Server (or via `dsconfigad` command). Once joined, AD users can log in with their domain credentials; Group Policy equivalent settings are applied via Mobile Device Management (MDM). Common integration issues include clock skew (Kerberos requires clocks to be within 5 minutes of the DC — sync using `sudo sntp -sS time.apple.com`), network connectivity to the DC, and DNS resolution. In mixed environments, this integration bridges Mac users into enterprise identity management.",
       },
     ],
   },
   {
     id: 8,
-    title: "Networking Basics",
+    title: "Voice, Accent and Communication",
+    level: "beginner",
     description:
-      "LAN/WAN, IP addressing, DNS, DHCP, and network troubleshooting.",
+      "Professional phone etiquette, accent training, email and chat support, and de-escalation techniques.",
     topics: [
       {
-        title: "What is a network: LAN, WAN, WLAN",
+        title: "Professional Phone Etiquette",
         explanation:
-          "A network is a system that connects multiple devices to share data and resources. A LAN (Local Area Network) connects devices within a limited area such as an office or home — typically using Ethernet cables or Wi-Fi. A WAN (Wide Area Network) connects multiple LANs across large geographic distances — the internet itself is the largest WAN. A WLAN (Wireless LAN) is a LAN using Wi-Fi rather than physical cables. In IT support, you will primarily deal with LAN and WLAN issues — devices failing to connect, IP address conflicts, or slow internal network speeds. Understanding the difference between these network types helps you ask the right diagnostic questions and involve the right team.",
+          "Phone support requires a distinct set of communication skills compared to face-to-face or email interaction. Standard etiquette: answer within 3 rings, greet warmly with your name and company ('Good morning, this is Arjun from Zyntho IT Support'), confirm the caller's name and ticket number, never put someone on hold for more than 2 minutes without checking back. Use hold music, not silence. When transferring, give the caller the name and extension of who they're being transferred to. Close every call by summarising the resolution and asking 'Is there anything else I can help you with today?' Consistent etiquette builds customer trust and professional credibility.",
       },
       {
-        title: "IP addressing: IPv4 basics, DHCP vs static IP",
+        title: "Neutral Accent Techniques",
         explanation:
-          "An IP address is a unique numerical label assigned to every device on a network, used to identify and communicate with it. IPv4 addresses are written in the format 192.168.1.1 — four numbers between 0 and 255, separated by dots. DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses to devices when they connect to a network — most devices use DHCP by default. A static IP is manually assigned and never changes — used for servers, printers, and network equipment that need a predictable address. In support, IP address conflicts (two devices with the same IP) are a common cause of connectivity loss. Running 'ipconfig' on Windows shows the device's current IP assignment.",
+          "A neutral accent does not mean eliminating your regional identity — it means ensuring your speech is clearly understood by an international audience. Key techniques: slow down your natural speaking pace by 10–15% when on calls; over-articulate consonants at the end of words (final T and D sounds are commonly dropped); use a slightly raised pitch for questions to make them sound friendlier. Practice linking words naturally: 'I can help you' should flow as 'I-can-help-you' without abrupt stops. Record yourself on calls and listen back — you will immediately notice patterns to improve. Companies like Concentrix and Wipro BPO use structured accent neutralisation programmes for new hires.",
       },
       {
-        title: "DNS and DHCP explained simply",
+        title: "Pace and Clarity",
         explanation:
-          "DNS (Domain Name System) is the internet's address book. When you type 'google.com' into a browser, DNS translates that name into the actual IP address of Google's server so your computer knows where to connect. Without DNS, you would need to memorise IP addresses for every website. DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses to devices on a network when they connect. Think of DHCP as the network's receptionist — it gives each arriving device a temporary address badge. In corporate support, DNS and DHCP failures cause widespread connectivity issues because users cannot reach internal systems or the internet. The command 'nslookup' tests DNS resolution from the command line.",
+          "Speaking too fast is the single biggest communication issue in telephone support. When nervous or busy, people naturally speed up. The ideal support call pace is 130–150 words per minute — fast enough to sound competent, slow enough to be understood clearly. Clarity comes from sentence structure: short sentences (under 15 words) are easier to follow over phone audio than long, complex ones. Use pauses strategically after important information ('Your ticket number is 4521... do you have something to write with?'). Spell out technical terms or names using the NATO alphabet when needed (Alpha, Bravo, Charlie). Customers who understand you are more cooperative and easier to help.",
       },
       {
-        title:
-          "Common network issues: no internet, slow connection, VPN problems",
+        title: "Email Communication",
         explanation:
-          "Three network issues appear most frequently in support queues. 'No internet' can mean the device has no IP (DHCP failure), DNS is broken, the gateway is unreachable, or the ISP is down — narrow it down with 'ipconfig' and 'ping'. Slow connections may be caused by bandwidth saturation, Wi-Fi interference, a faulty cable, or an ISP issue — run a speed test to isolate the problem. VPN problems are increasingly common in hybrid work environments; they typically involve incorrect credentials, expired certificates, firewall blocking the VPN port, or the VPN client needing reinstallation. Always ask the user whether the issue is on Wi-Fi, wired, or only when VPN is active — this narrows the cause significantly.",
+          "Professional email in IT support must be clear, concise, and structured. The subject line should reference the ticket number and issue type: 'Resolution Update: Ticket #4521 — VPN Access Issue'. The greeting should use the customer's name. The body should use short paragraphs and bullet points for steps. Avoid passive voice ('The issue was investigated' → 'I investigated the issue'). Always close with next steps and a timeline: 'I will follow up by 3 PM today with an update.' Use professional sign-offs ('Best regards' or 'Kind regards'), include your name, team, and contact number. Proofread before sending — errors undermine confidence in your technical competence.",
       },
       {
-        title: "Basic commands: ping, ipconfig/ifconfig, tracert, nslookup",
+        title: "Chat Support Best Practices",
         explanation:
-          "Four command-line tools are essential for first-line network troubleshooting. 'ping [IP or hostname]' tests basic connectivity — a successful ping shows round-trip times; no response indicates the target is unreachable or blocking ICMP. 'ipconfig' (Windows) or 'ifconfig' (Mac/Linux) displays the device's current IP address, subnet mask, and default gateway. 'tracert [hostname]' (Windows) or 'traceroute' (Mac/Linux) traces the path packets take to reach a destination and shows where the connection slows or drops. 'nslookup [hostname]' tests whether DNS resolution is working correctly. Mastering these four commands allows you to diagnose most network issues within minutes and provide precise information to the network team when escalating.",
+          "Chat support has unique demands — customers expect faster responses than email (under 2 minutes) but the interaction is text-only with no vocal cues. Best practices: use a warm opening ('Hi [Name], thanks for reaching out! I'm happy to help.'); avoid short, cold replies that feel robotic; use formatting (bold for steps, numbered lists for procedures) where the platform allows; check in if you need research time ('Let me look into this — please give me a moment'); keep the customer engaged rather than going silent. Chat logs are evidence — be professional and accurate. Avoid slang, excessive emojis, and vague statements. Chat support skills translate directly to email and ticketing.",
       },
       {
-        title: "Wi-Fi troubleshooting steps",
+        title: "De-escalation Techniques",
         explanation:
-          "Wi-Fi issues are among the most reported IT support tickets, particularly in hybrid work environments. A systematic troubleshooting approach saves significant time. Start with the basics: is the Wi-Fi adapter enabled? (Check Network & Internet settings or the Fn key.) Is the device connecting to the correct SSID? Can other devices connect to the same network? If yes, the issue is device-specific. Forget the network and reconnect with credentials. Check if an IP address is being assigned using 'ipconfig'. Update the Wi-Fi driver. If no devices can connect, the issue is the router or access point. Reboot the router, check for firmware updates, and confirm DHCP is active. Always document findings even when escalating.",
-      },
-      {
-        title: "Firewall basics and port blocking",
-        explanation:
-          "A firewall is a security system that monitors and controls incoming and outgoing network traffic based on predefined rules. It acts as a barrier between a trusted internal network and untrusted external networks. Firewalls work by allowing or blocking traffic on specific ports — for example, port 443 is HTTPS (secure web), port 80 is HTTP, port 3389 is RDP, and port 25 is SMTP email. In support, firewall issues typically present as an application or service failing to connect despite the network being otherwise healthy. The fix usually involves adding a firewall rule to allow traffic on the specific required port. Windows Defender Firewall can be temporarily disabled for testing, but always re-enable it after diagnosis.",
+          "De-escalation is the set of techniques used to calm an angry or distressed customer and guide the conversation back to productive problem-solving. The HEAT method: Hear them out (let them vent fully without interruption), Empathise ('I completely understand why that's frustrating'), Apologise for the impact ('I'm sorry you've had to deal with this'), and Take action ('Here's what I'm going to do right now to fix this'). Lower your speaking volume slightly when a customer raises theirs — it creates a contrast that naturally calms the conversation. Never argue, never say 'It's not my fault', and never promise what you cannot deliver. De-escalation is a skill that protects both the customer relationship and your own wellbeing.",
       },
     ],
   },
   {
     id: 9,
-    title: "ITIL & Service Management",
+    title: "SQL and Database Basics",
+    level: "intermediate",
     description:
-      "ITIL 4 concepts, service desk function, SLAs, and CMDB basics.",
+      "SQL queries, JOINs, database backup and recovery, performance tuning, stored procedures, and access management.",
     topics: [
       {
-        title: "What is ITIL and why companies use it",
+        title: "SQL SELECT Queries",
         explanation:
-          "ITIL (Information Technology Infrastructure Library) is a globally recognised framework of best practices for IT service management. It provides organisations with a structured, repeatable approach to planning, delivering, and improving IT services. Companies adopt ITIL because it reduces service disruption, improves customer satisfaction, lowers costs through standardised processes, and enables clearer communication between IT and business teams. ITIL is not software — it is a set of guidelines and practices that can be implemented in any tool. Many organisations require ITIL Foundation certification for IT support roles because it demonstrates that an employee understands how professional IT service delivery works, from incident logging to continual improvement.",
+          "The SELECT statement is the foundation of SQL, used to retrieve data from one or more tables. Basic syntax: `SELECT column1, column2 FROM table_name WHERE condition ORDER BY column ASC/DESC`. Use `SELECT *` sparingly — always specify needed columns in production to reduce data transfer. Filtering with WHERE uses comparison operators (=, >, <, !=, BETWEEN, LIKE, IN). Aggregation functions (COUNT, SUM, AVG, MAX, MIN) summarise data; use with GROUP BY for grouped results. HAVING filters grouped results (unlike WHERE which filters rows). Understanding SELECT thoroughly enables you to write reports, diagnose data issues, and answer business questions directly from the database without developer involvement.",
       },
       {
-        title: "ITIL 4 key concepts: value, service, practice",
+        title: "JOINs and Relationships",
         explanation:
-          "ITIL 4, the current version, introduced a modernised approach built around three core concepts. Value is the central principle — all IT activities must deliver value to the customer and the organisation. A service is a means of enabling value co-creation by facilitating outcomes that customers want to achieve without managing specific costs and risks. A practice is the ITIL 4 term for what was previously called a 'process' — it encompasses people, processes, tools, and skills needed to achieve an objective. ITIL 4 includes 34 management practices grouped into General, Service, and Technical categories. The Service Value System (SVS) in ITIL 4 shows how all components work together to create value.",
+          "JOINs combine rows from two or more tables based on a related column. INNER JOIN returns only matching rows in both tables — the most common type. LEFT JOIN returns all rows from the left table and matching rows from the right (NULL for no match). RIGHT JOIN is the mirror. FULL OUTER JOIN returns all rows from both tables. CROSS JOIN creates a Cartesian product (every combination — use rarely). Good database design uses JOINs to normalise data: store customer information once, reference it by CustomerID in order tables, rather than repeating the name in every order row. Understanding normalisation and relationships is fundamental for SQL DBA and database-adjacent support roles.",
       },
       {
-        title: "Incident vs Problem vs Change vs Service Request",
+        title: "Database Backup and Recovery",
         explanation:
-          "These four categories define the types of work a service desk handles. An Incident is any unplanned disruption or degradation of a service — for example, a user cannot log in. A Problem is the underlying root cause of one or more incidents — for example, a corrupted Active Directory attribute affecting multiple users. A Change is a controlled addition, modification, or removal of a service component — for example, a server upgrade. A Service Request is a formal request for something new — for example, a new user account or software installation. Correctly categorising tickets at the point of logging ensures they are routed to the right team, handled with the correct process, and tracked against the appropriate SLA.",
+          "Database backup is a non-negotiable responsibility in DBA and system administration roles. SQL Server offers three backup types: Full backup (complete copy of all data), Differential backup (changes since last full backup), and Transaction Log backup (all transactions since last log backup — enables point-in-time recovery). Recovery models: Simple (no log backups, limited recovery), Full (full point-in-time recovery), Bulk-Logged (optimised for bulk operations). RPO (Recovery Point Objective) defines acceptable data loss; RTO (Recovery Time Objective) defines acceptable downtime. Always verify backups by running test restores — a backup that has never been tested is not a reliable backup.",
       },
       {
-        title: "Service Desk function and responsibilities",
+        title: "Performance Tuning Basics",
         explanation:
-          "The Service Desk is the single point of contact (SPOC) between IT and the business. It is responsible for logging all incoming incidents and requests, providing first-line resolution, escalating to specialist teams when required, and communicating updates to users. In ITIL terms, the Service Desk is not just a call-handling function — it is a critical business relationship hub. Responsibilities include ticket lifecycle management, SLA monitoring, knowledge base contribution, and trend reporting. Service Desk agents are often the first impression a user has of the IT function. A high-performing Service Desk improves overall business productivity by reducing the time employees spend dealing with IT disruptions.",
+          "Database performance issues typically stem from missing indexes, poorly written queries, or insufficient hardware resources. Indexes are data structures that speed up data retrieval (like a book index) at the cost of slightly slower writes. Identify slow queries using SQL Server's Query Store, Execution Plans, or `sys.dm_exec_query_stats`. The execution plan shows whether a query is doing expensive full table scans instead of index seeks. Common fixes: add appropriate indexes, rewrite queries to avoid SELECT *, avoid functions in WHERE clauses (they prevent index usage), update statistics, and avoid cursor-based operations in favour of set-based queries. Regular index maintenance (rebuild/reorganise) keeps performance consistent over time.",
       },
       {
-        title: "SLAs, OLAs, and underpinning contracts",
+        title: "Stored Procedures",
         explanation:
-          "These three agreement types define the commitments that support delivery. An SLA (Service Level Agreement) is the formal agreement between IT and the customer defining expected response and resolution times, availability, and service quality. An OLA (Operational Level Agreement) is an internal agreement between different IT teams — for example, between the service desk and the network team — defining their mutual support commitments. An Underpinning Contract is an agreement with a third-party vendor that supports the SLA. For example, a hardware maintenance contract with a vendor supports an SLA that promises next-day hardware replacement. Understanding all three ensures that SLA commitments are realistic, supported by internal processes, and backed by vendor agreements.",
+          "Stored procedures are pre-compiled SQL code blocks stored in the database, executed by calling their name rather than writing the full query each time. Benefits include better performance (execution plan cached), improved security (users can execute a procedure without direct table access), code reuse, and reduced network traffic (one call vs. multiple queries). Basic syntax: `CREATE PROCEDURE ProcedureName @Param1 INT AS BEGIN ... END`. Use parameters to make procedures reusable. Error handling uses TRY...CATCH blocks. Stored procedures are widely used in enterprise applications for data manipulation, business logic enforcement, and generating reports. Every SQL DBA is expected to read, write, and debug stored procedures fluently.",
       },
       {
-        title: "CMDB basics: Configuration Management Database",
+        title: "User Access Management",
         explanation:
-          "A CMDB (Configuration Management Database) is a centralised repository that stores information about all IT assets and their relationships — known as Configuration Items (CIs). CIs include servers, laptops, applications, network devices, and software licences. The CMDB is used to understand the impact of incidents and changes (for example, which services are affected if a specific server fails), plan changes with awareness of dependencies, and track assets throughout their lifecycle. In tools like ServiceNow, the CMDB is deeply integrated with incident and change management. Keeping the CMDB accurate requires regular audits and automated discovery tools. For entry-level support staff, understanding the CMDB helps you escalate with better context.",
-      },
-      {
-        title: "Continual Service Improvement (CSI)",
-        explanation:
-          "Continual Service Improvement (CSI) is the ITIL practice of regularly reviewing and improving IT services, processes, and practices to ensure they continue to meet the changing needs of the business. CSI uses a seven-step improvement process: identify the improvement strategy, define what will be measured, gather data, process data, analyse the data, present and use the information, and implement improvement. In practical terms, CSI activities include reviewing SLA breach trends, reducing recurring incidents through problem management, updating knowledge base articles, and training staff on new processes. CSI is not a one-time project — it is an ongoing cultural commitment to making the service better over time.",
+          "Database access management ensures that users can only see and modify data appropriate to their role — a core principle of data security. SQL Server uses Logins (server-level identity), Users (database-level identity mapped to a login), and Roles (collections of permissions assigned to users). The principle of least privilege means granting only the minimum permissions required. Common permissions: SELECT, INSERT, UPDATE, DELETE, EXECUTE. Use `GRANT`, `REVOKE`, and `DENY` statements to manage permissions. Regularly audit database users with `sys.database_principals` and `sys.database_permissions`. Orphaned users (users without a matching login) should be cleaned up. Access management is audited during security reviews and is a regulatory compliance requirement.",
       },
     ],
   },
   {
     id: 10,
-    title: "Incident & Service Desk Management",
+    title: "System Administration",
+    level: "advanced",
     description:
-      "Incident lifecycle, priority matrix, ticket management, and major incidents.",
+      "Linux command line, user management, cron jobs, log analysis, shell scripting, and security hardening.",
     topics: [
       {
-        title:
-          "Incident lifecycle: log, categorize, prioritize, resolve, close",
+        title: "Linux Command Line Basics",
         explanation:
-          "Every incident follows a defined lifecycle to ensure it is handled consistently and efficiently. Log: the incident is recorded in the ticketing system with user details, description, and time. Categorize: the incident is assigned a type (hardware, software, network, access) to route it to the correct team. Prioritize: urgency and impact are assessed to set the SLA clock and determine handling order. Resolve: the service desk works through the issue using available tools, knowledge base, and escalation paths until the service is restored. Close: the user confirms resolution, the ticket is updated with the fix details, and any knowledge article updates are flagged. Following this lifecycle consistently ensures nothing falls through the cracks.",
+          "The Linux command line is essential for any system administrator. Core commands: `ls -la` (list all files with permissions and ownership), `cd`, `pwd` (print working directory), `mkdir`, `rm -rf` (delete recursively — use carefully), `cp`, `mv`, `find / -name 'filename'` (search files), `grep -r 'pattern' /path` (search content), `cat`, `less`, `head`, `tail -f` (stream live log output), `chmod` (change permissions), `chown` (change ownership). Process management: `ps aux`, `top`, `htop`, `kill`, `killall`. Package management varies by distribution: `apt` (Debian/Ubuntu), `yum`/`dnf` (RHEL/CentOS), `zypper` (SUSE). Mastery of these commands is a minimum requirement for any Linux sysadmin role.",
       },
       {
-        title: "Priority matrix: impact vs urgency",
+        title: "User and Group Management",
         explanation:
-          "Priority in incident management is determined by two factors: impact and urgency. Impact measures the breadth of effect — how many users, systems, or business processes are affected. Urgency measures the speed at which the situation deteriorates or needs to be addressed. Together, these produce a priority level, typically P1 to P4. P1 (Critical): complete service outage affecting many users, requiring immediate response. P2 (High): significant service degradation or critical user affected. P3 (Medium): single user affected with a workaround available. P4 (Low): minor request or cosmetic issue. The priority matrix ensures that limited support resources are directed where business impact is greatest, and that SLA commitments are realistic and enforceable.",
+          "Linux uses a Unix-based permission model where every file and process is owned by a user and a group. Create users with `useradd -m username` (-m creates home directory); set passwords with `passwd username`; delete with `userdel -r username` (-r removes home). Create groups with `groupadd groupname`; add users to groups with `usermod -aG groupname username`. View user info with `id username`; view all users in `/etc/passwd`; view groups in `/etc/group`. The `sudo` mechanism allows non-root users to run commands with elevated privileges — configure via `visudo` (edits `/etc/sudoers` safely). In enterprise environments, user management integrates with LDAP/AD for centralised identity.",
       },
       {
-        title: "Ticket management in tools like ServiceNow, Jira, Zendesk",
+        title: "Cron Jobs and Scheduling",
         explanation:
-          "Ticketing tools are the core operational platform for any service desk. ServiceNow is the most widely used enterprise ITSM platform — it handles incidents, problems, changes, assets, and the CMDB in a single system. Jira Service Management (by Atlassian) is popular in software and tech companies and integrates tightly with development workflows. Zendesk is widely used in customer service and support centre environments. Regardless of the tool, the fundamental skills are the same: log accurately, categorise correctly, prioritise appropriately, update in real time, and close with complete resolution notes. Employers rarely expect prior experience with a specific tool — demonstrating that you understand the principles transfers quickly to any platform.",
+          "Cron is the Linux task scheduler, executing commands at defined times without manual intervention. The crontab format is: `minute hour day-of-month month day-of-week command`. Example: `0 2 * * * /scripts/backup.sh` runs backup.sh at 2 AM daily. Edit your crontab with `crontab -e`; view with `crontab -l`; list all users' crontabs in `/etc/cron.d/`. Special shortcuts: @reboot (run at startup), @daily, @weekly. Use `systemd` timers as a modern alternative to cron on RHEL/CentOS 7+ systems. Always redirect cron output to a log file (`>> /var/log/cron-backup.log 2>&1`) for auditing. Unreliable cron jobs are a common source of missed backups and data loss incidents.",
       },
       {
-        title: "Major incident management (P1/P2 handling)",
+        title: "Log Analysis",
         explanation:
-          "A major incident (P1 or P2) is a high-impact event that causes significant disruption to business operations and requires a dedicated, coordinated response. Key roles in a major incident include the Incident Manager (coordinates the response), the technical bridge team (specialists working the fix), and the communications lead (updates to affected users and stakeholders). The process involves immediate escalation, a dedicated bridge call or chat channel, regular status updates at defined intervals (typically every 30 minutes for P1), and a post-incident review (PIR) once resolved. During a major incident, communication is as important as the technical fix — stakeholders need to know what is happening, the expected resolution time, and the business impact.",
+          "Linux log analysis is critical for diagnosing system issues and security incidents. Primary log locations: `/var/log/syslog` or `/var/log/messages` (general system events), `/var/log/auth.log` or `/var/log/secure` (authentication events), `/var/log/nginx/` or `/var/log/apache2/` (web server logs), `/var/log/kern.log` (kernel messages). Use `journalctl -xe` (systemd logs), `journalctl -u servicename` (logs for specific service), `journalctl --since 'today'` (time-filtered). Common analysis: `grep 'ERROR' /var/log/syslog | tail -50` finds recent errors; `awk '{print $1}' /var/log/auth.log | sort | uniq -c | sort -nr` counts events by source. Centralised logging via ELK Stack or Splunk is standard in enterprise environments.",
       },
       {
-        title: "Communication during incidents: updates to users",
+        title: "Shell Scripting Basics",
         explanation:
-          "Proactive communication during an incident is one of the most valued behaviours in IT support. Users who receive regular, honest updates tolerate service outages far better than users left in silence. Best practices include sending an initial acknowledgement within the SLA response window confirming the incident is being investigated, providing updates at regular intervals (every 30 to 60 minutes for significant incidents) even if there is no resolution yet, and sending a resolution notification with a brief explanation of the cause and fix. Updates should be written in plain language, free of technical jargon. In ITIL terms, this practice is part of the Incident Management practice and directly impacts CSAT and user trust.",
+          "Shell scripts automate repetitive Linux tasks, saving time and reducing human error. A basic bash script starts with a shebang line: `#!/bin/bash`. Variables: `NAME='value'`; reference with `$NAME`. Conditionals: `if [ condition ]; then ... fi`. Loops: `for i in $(seq 1 10); do ... done`. Functions: `function_name() { commands; }`. User input: `read -p 'Enter value: ' VAR`. Exit codes: 0 = success, non-zero = failure. Make a script executable with `chmod +x script.sh`. Practical uses: automated backups, user provisioning scripts, disk space monitoring with email alerts, log rotation, and batch file operations. Shell scripting proficiency is expected of mid-level to senior sysadmins in every Linux environment.",
       },
       {
-        title: "Knowledge base articles: when and how to use them",
+        title: "Security Hardening",
         explanation:
-          "A knowledge base is a searchable repository of documented solutions, workarounds, and how-to guides maintained by the support team. It is one of the most powerful tools for improving first call resolution and reducing ticket volume. Use the knowledge base before escalating — if the issue is documented, resolution should be immediate. After resolving an undocumented issue, create or update a knowledge article so the next agent benefits. A good knowledge article includes the symptoms, affected environment, root cause (if known), resolution steps, and any applicable workarounds. In ITIL, this is part of the Knowledge Management practice. Teams with strong knowledge bases resolve significantly more incidents at first-line without specialist involvement.",
-      },
-      {
-        title: "Shift handover and documentation",
-        explanation:
-          "Shift handover is the formal process of transferring responsibility for open incidents, ongoing issues, and critical context from one team or shift to the next. Poor handover is one of the most common causes of SLA breaches, duplicate work, and customer frustration. A good handover includes a summary of all open P1/P2 incidents with current status and next actions, any business-critical issues expected to escalate, known system risks or change windows overnight, and any communication commitments made to users. Handover should be both written (via a handover log) and verbal where possible. Good documentation discipline throughout a shift makes handover straightforward and demonstrates professionalism to your team and management.",
+          "Linux security hardening reduces the attack surface of a system to its minimum necessary footprint. Key hardening steps: Disable root SSH login (`PermitRootLogin no` in `/etc/ssh/sshd_config`), use SSH key authentication instead of passwords, change the SSH port from 22, configure UFW or iptables to allow only necessary ports. Keep the system patched: `apt update && apt upgrade -y`. Remove unused services: `systemctl disable servicename`. Enable auditd for security event logging. Use fail2ban to auto-block brute-force SSH attempts. Apply CIS (Center for Internet Security) benchmarks as a standard hardening checklist. Security hardening is a regulatory requirement in PCI-DSS, HIPAA, and ISO 27001 compliant environments.",
       },
     ],
   },
   {
     id: 11,
-    title: "SQL DBA Basics",
+    title: "Azure Cloud Fundamentals",
+    level: "advanced",
     description:
-      "Database fundamentals, SQL basics, backup/restore, and performance tuning.",
+      "Azure architecture, virtual machines, Azure AD, storage, networking, and security essentials.",
     topics: [
       {
-        title: "What is a database and what a DBA does",
+        title: "Azure Architecture Overview",
         explanation:
-          "A database is an organised collection of structured data stored electronically, designed to allow efficient retrieval, insertion, and management of information. Databases power virtually every application — from banking systems to helpdesk tools to e-commerce platforms. A DBA (Database Administrator) is responsible for the installation, configuration, performance, security, backup, and availability of database systems. In an entry-level DBA role, you will typically perform tasks like running scheduled jobs, monitoring performance, executing backup and restore procedures, managing user permissions, and assisting developers with queries. Understanding what a DBA does helps you frame your skills correctly during interviews and identify which tasks to prioritise as you learn the role.",
+          "Microsoft Azure is a public cloud platform with over 200 services across compute, storage, networking, security, AI, and DevOps. Azure's global infrastructure is organised into Regions (geographic locations with multiple data centres), Availability Zones (physically separate data centres within a region for fault tolerance), and Edge Locations (for CDN and low-latency delivery). Azure resources are organised hierarchically: Management Groups → Subscriptions → Resource Groups → Resources. Azure Resource Manager (ARM) is the deployment and management service — all resource creation goes through ARM regardless of interface used (Portal, CLI, PowerShell, or Terraform). Understanding this hierarchy is foundational for the AZ-900 Azure Fundamentals certification.",
       },
       {
-        title: "SQL basics: SELECT, INSERT, UPDATE, DELETE",
+        title: "Virtual Machines in Azure",
         explanation:
-          "SQL (Structured Query Language) is the standard language used to interact with relational databases. Four fundamental commands form the core of daily DBA and developer work. SELECT retrieves data from one or more tables — 'SELECT * FROM Employees WHERE Department = IT'. INSERT adds new rows to a table — 'INSERT INTO Employees (Name, Role) VALUES ('Priya', 'DBA')'. UPDATE modifies existing data — 'UPDATE Employees SET Role = 'Senior DBA' WHERE Name = 'Priya''. DELETE removes rows — 'DELETE FROM Employees WHERE Name = 'Priya''. Always use a WHERE clause with UPDATE and DELETE to avoid accidentally modifying or deleting all rows in a table. These four commands are tested in virtually every SQL-related interview.",
+          "Azure Virtual Machines (VMs) are Infrastructure-as-a-Service (IaaS) compute resources that provide scalable Windows or Linux servers in the cloud. When provisioning a VM, key decisions include: VM Size (CPU/RAM — B-series for burstable workloads, D-series for general purpose, F-series for compute-heavy), Region (choose closest to users for latency), OS disk type (Premium SSD for production, Standard SSD for dev/test), and Network Security Group (NSG) rules. Pricing models: Pay-as-you-go (per minute), Reserved Instances (1–3 year commitment, up to 72% savings), Spot Instances (unused capacity, cheapest but can be reclaimed). Always apply Azure Advisor recommendations to reduce costs and improve security posture.",
       },
       {
-        title: "Database objects: tables, views, indexes, stored procedures",
+        title: "Azure Active Directory",
         explanation:
-          "A relational database is made up of several types of objects. Tables are the primary storage structure — each table holds rows and columns of data, similar to a spreadsheet. Views are virtual tables based on a SELECT query — they simplify complex queries and can be used to restrict what data users see. Indexes speed up data retrieval by creating a sorted reference to columns, similar to the index at the back of a book — without them, the database must scan every row (a table scan). Stored procedures are pre-written SQL code blocks saved in the database and executed by name — used for repetitive tasks, business logic, and automated processes. Understanding these objects is essential for any DBA role.",
+          "Azure Active Directory (Azure AD / Entra ID) is Microsoft's cloud-based identity and access management service. Unlike on-premises AD (which uses Kerberos/LDAP), Azure AD uses OAuth 2.0, OpenID Connect, and SAML for authentication. Core features: Single Sign-On (SSO) to thousands of SaaS apps, Multi-Factor Authentication (MFA), Conditional Access (grant/block access based on user, device, location, and risk), and B2B/B2C for external users. Azure AD Connect syncs on-premises AD to Azure AD in hybrid environments. Roles: Global Administrator (full control), User Administrator, Application Administrator. Understanding Azure AD is mandatory for any cloud or hybrid IT support role.",
       },
       {
-        title: "Backup and restore: full, differential, transaction log",
+        title: "Azure Storage",
         explanation:
-          "Backup and restore are the most critical DBA responsibilities — data loss due to missed or failed backups is a career-defining event. SQL Server supports three backup types. A full backup captures the entire database at a point in time — typically run weekly or daily. A differential backup captures only the data changed since the last full backup — faster to create and smaller in size, typically run daily. A transaction log backup captures all database changes since the last log backup — usually run every 15 to 60 minutes, enabling point-in-time recovery. A typical recovery strategy combines all three: restore the last full, apply the latest differential, then apply transaction logs up to the point of failure.",
+          "Azure Storage is a massively scalable, durable cloud storage service with four data services: Blob Storage (unstructured data — images, videos, backups), File Storage (fully managed SMB/NFS file shares for cloud or hybrid use), Queue Storage (message queuing for decoupled applications), and Table Storage (NoSQL key-value store). Storage accounts have redundancy options: LRS (3 copies in one datacenter), ZRS (3 copies across zones), GRS (6 copies across two regions), GZRS. Access tiers: Hot (frequently accessed), Cool (infrequently accessed, cheaper storage), Archive (rarely accessed, cheapest storage, hours to retrieve). Storage is secured via access keys, Shared Access Signatures (SAS), or Azure AD authentication.",
       },
       {
-        title: "SQL Server Agent and scheduled jobs",
+        title: "Azure Networking",
         explanation:
-          "SQL Server Agent is a Microsoft SQL Server component that automates routine database administration tasks by running scheduled jobs. A job is a defined set of one or more steps — for example, run a backup script, then send a notification email. Jobs can be scheduled by time (daily at 2am), event (when an alert triggers), or on demand. SQL Server Agent is used for backup automation, database maintenance plans (rebuilding indexes, updating statistics), report generation, and data imports or exports. Monitoring job history is part of daily DBA work — failed jobs must be investigated immediately as they may indicate missed backups or broken data pipelines. SQL Server Agent requires the Windows service to be running.",
+          "Azure networking provides the connectivity fabric for all cloud resources. Key services: Virtual Network (VNet) — the isolated network in Azure where VMs and services communicate; Subnets divide VNets into segments; Network Security Groups (NSGs) control inbound/outbound traffic at subnet and NIC level; VNet Peering connects VNets within or across regions; Azure VPN Gateway connects on-premises networks to Azure via IPsec/IKE VPN; ExpressRoute provides a dedicated private connection (not over the internet). Azure Load Balancer distributes traffic across VMs; Azure Application Gateway provides Layer-7 load balancing with WAF. DNS: Azure DNS hosts custom domains; Private DNS Zones for internal name resolution.",
       },
       {
-        title: "Performance basics: slow queries, execution plans",
+        title: "Azure Security Center",
         explanation:
-          "Database performance issues, particularly slow queries, are among the most common escalations a DBA handles. A slow query is one that takes significantly longer than expected, often due to missing indexes, poorly written SQL, or excessive data volume. The first diagnostic tool is the execution plan — a visual representation of how SQL Server processes a query, showing which operations are most expensive. Look for Table Scan operations (red flag — no index being used), high estimated row counts, and key lookups. The Query Store in SQL Server tracks query performance over time and identifies regressions after changes. Adding a missing index on the filtered column is often the fastest fix for a slow query in an entry-level DBA environment.",
-      },
-      {
-        title: "User management and permissions in SQL Server",
-        explanation:
-          "Controlling who can access what data is a core DBA responsibility with direct security and compliance implications. SQL Server uses a two-layer security model: logins at the server level and users at the database level. A login grants access to the SQL Server instance. A user maps the login to a specific database and is assigned to roles. Built-in database roles include db_datareader (SELECT only), db_datawriter (INSERT, UPDATE, DELETE), and db_owner (full control). The principle of least privilege requires granting only the minimum permissions necessary for a user to do their job. Permissions should be reviewed regularly and revoked promptly when a user changes roles or leaves the organisation.",
+          "Microsoft Defender for Cloud (formerly Azure Security Center) is a unified cloud security management system providing threat protection across Azure, hybrid, and multi-cloud environments. It continuously assesses your security posture with a Secure Score — a quantified measure of your security configuration quality. Key capabilities: Security recommendations (actionable steps to improve posture), threat detection and alerts (suspicious activity across VMs, storage, databases), regulatory compliance dashboard (tracks compliance with PCI-DSS, HIPAA, CIS benchmarks), and just-in-time VM access (reduces attack surface by allowing RDP/SSH only when needed). In Azure admin roles, Defender for Cloud is reviewed daily to maintain strong security posture.",
       },
     ],
   },
   {
     id: 12,
-    title: "System Administration & Azure/AD",
+    title: "Interview and Career Readiness",
+    level: "beginner",
     description:
-      "Active Directory, Azure AD, Windows Server, patch management, and monitoring.",
+      "Resume writing, LinkedIn optimisation, interview techniques, professional presentation, and career growth.",
     topics: [
       {
-        title: "Role of a system administrator",
+        title: "Resume Writing Tips",
         explanation:
-          "A System Administrator (SysAdmin) is responsible for the installation, configuration, maintenance, and security of the servers, infrastructure, and operating systems that a business relies on. Unlike a service desk agent who responds reactively to user issues, a SysAdmin works proactively to ensure systems are available, secure, and performing optimally. Typical responsibilities include managing Windows Server environments, Active Directory, user provisioning, patch management, backup monitoring, and implementing security policies. In entry-level roles, SysAdmins often share responsibilities with the service desk. As you gain experience, specialisation into areas like cloud administration (Azure) or security becomes the career progression path.",
+          "An IT support resume should be one page for under 2 years' experience, two pages maximum for senior roles. Use a clean, ATS-friendly format without tables or columns — Applicant Tracking Systems parse plain text. The summary section (2–3 sentences) should state your role, key skills, and value proposition. List technical skills clearly: operating systems, ticketing tools, certifications, scripting languages. For experience, use action verbs and quantify achievements: 'Resolved 40+ tickets weekly, maintaining 92% CSAT score' is stronger than 'Helped users with issues'. Include all relevant certifications (CompTIA A+, ITIL Foundation, Azure AZ-900). Tailor your resume keywords to each job description to pass ATS screening.",
       },
       {
-        title: "Active Directory: users, groups, OUs, GPOs",
+        title: "LinkedIn Profile Optimisation",
         explanation:
-          "Active Directory (AD) is Microsoft's directory service for managing users, computers, and resources in a Windows domain environment. Users are account objects that allow individuals to log into domain-joined machines using centralised credentials. Groups are collections of users or computers used to assign permissions efficiently — instead of setting permissions for each user individually, you add them to a group. Organisational Units (OUs) are containers within AD used to organise objects logically by department, location, or function. Group Policy Objects (GPOs) are sets of rules linked to OUs that enforce configuration settings across machines and users — for example, blocking USB drives, setting desktop wallpaper, or mapping network drives automatically at login.",
+          "LinkedIn is the primary platform for IT recruiters. Key profile elements: Professional photo (increases profile views by 14x), headline (not just 'Student' — use 'Aspiring IT Support Analyst | CompTIA A+ | ITIL Foundation'), About section (3–4 sentences summarising your goal, skills, and value), Experience section (same as resume with quantified achievements), Skills section (add 10+ relevant skills — endorsements from connections boost visibility), Certifications section (add all credentials), and Featured section (add a project or article). Use 'Open to Work' for recruiters. Connect with alumni, IT professionals, and recruiters. Engage with industry content weekly — LinkedIn's algorithm rewards active profiles with significantly more visibility.",
       },
       {
-        title: "Azure AD: cloud identity, SSO, MFA",
+        title: "STAR Method for Interviews",
         explanation:
-          "Azure Active Directory (Azure AD, now rebranded as Microsoft Entra ID) is Microsoft's cloud-based identity and access management service. While traditional on-premises AD manages users within an office network, Azure AD manages identities for cloud and hybrid environments, enabling users to securely access cloud applications such as Microsoft 365, SharePoint, and thousands of third-party SaaS apps. SSO (Single Sign-On) allows users to authenticate once and access multiple applications without re-entering credentials. MFA (Multi-Factor Authentication) adds a second layer of verification — typically a phone notification or authentication app code — significantly reducing the risk of compromised accounts. Azure AD is central to modern enterprise IT security architecture.",
+          "The STAR method structures answers to behavioural interview questions — those starting with 'Tell me about a time when...' STAR stands for: Situation (brief context — where and when), Task (your specific responsibility), Action (what you actually did — focus here, use 'I' not 'we'), Result (quantify the outcome wherever possible). Example: 'Tell me about a time you handled an angry customer.' S: 'A client's email system was down for 3 hours.' T: 'I was the first-line agent who took the call.' A: 'I apologised, escalated to Tier 2 immediately, gave 30-minute updates, and stayed on the call until resolved.' R: 'The client sent positive feedback and the CSAT score was 5/5.' Practise 10 STAR stories before any interview.",
       },
       {
-        title: "Windows Server basics: roles and features",
+        title: "Dress Code and Body Language",
         explanation:
-          "Windows Server is the operating system that runs on corporate servers, providing shared services to the network. Unlike a desktop Windows OS, Windows Server is designed for multi-user, high-availability workloads. Roles are the primary services a server provides — common roles include Active Directory Domain Services (AD DS), DNS Server, DHCP Server, File and Storage Services, and Print Services. Features are optional software components that support roles or add functionality — for example, the .NET Framework or PowerShell DSC. Roles and features are installed and managed through Server Manager. Understanding which roles are installed on which servers is essential for troubleshooting and for planning changes that could affect dependent services.",
+          "Professional presentation significantly influences interview outcomes. For IT roles, business casual is standard: ironed trousers or dark jeans, collared shirt or blouse, clean shoes. Avoid casual wear (t-shirts, trainers) and over-formal wear (three-piece suit for a support role) unless specified. Body language accounts for over 55% of first impressions. Firm handshake (not crushing), consistent eye contact, upright posture, and genuine smile convey confidence and enthusiasm. In video interviews: ensure good lighting (light source in front of you), clean background, working microphone, camera at eye level. Arrive 10 minutes early for in-person; join 5 minutes early for video. These details signal professionalism before you've said a word.",
       },
       {
-        title: "File and print server management",
+        title: "Salary Negotiation Basics",
         explanation:
-          "File servers store and share files centrally, allowing multiple users to access documents from a single location rather than keeping copies on individual machines. Permissions on shared folders are controlled through a combination of NTFS permissions (applied to the file system) and Share permissions — the effective permission is the most restrictive of the two. Common admin tasks include creating new shares, modifying folder permissions, monitoring disk usage, and investigating access denied errors. Print servers centralise printer management, deploying printers to users via Group Policy and maintaining a single queue. Managing print servers includes resolving stuck queues, adding new printers, and ensuring correct drivers are available for all deployed operating systems.",
+          "Salary negotiation is a professional expectation in IT hiring — recruiters budget expecting negotiation. Research market rates using LinkedIn Salary, Glassdoor, Ambitionbox, and Levels.fyi before any interview. Know your number: desired salary and acceptable floor. Wait for the employer to make the first offer when possible. Counter confidently: 'Based on my research of the market and my skills in [specific areas], I was expecting closer to [target figure]. Is there flexibility?' If the salary is fixed, negotiate other components: joining bonus, extra leave, WFH days, training budget, or earlier performance review. Never accept verbally on the spot — it is standard practice to take 24 hours to consider. Always get the final offer in writing.",
       },
       {
-        title: "Patch management and WSUS",
+        title: "First Week on the Job",
         explanation:
-          "Patch management is the process of identifying, testing, and deploying software updates to keep systems secure and stable. Unpatched systems are one of the most common entry points for cyberattacks. WSUS (Windows Server Update Services) is a free Microsoft tool that allows organisations to control which updates are deployed to which computers and when. Instead of each machine downloading patches directly from Microsoft, WSUS acts as an internal update server. Administrators approve patches after testing, then deploy them in phases — typically test machines first, then broader rollout. Patch cycles in most organisations follow a monthly schedule aligned with Microsoft's Patch Tuesday. Monitoring patch compliance rates is a regular SysAdmin reporting responsibility.",
-      },
-      {
-        title: "Monitoring and alerting basics",
-        explanation:
-          "Proactive monitoring allows SysAdmins to detect and respond to issues before users are impacted. Key metrics to monitor include CPU and memory utilisation, disk space, service availability, network throughput, and event log errors. Tools used for monitoring include built-in Windows options like Performance Monitor and Task Manager on servers, as well as enterprise tools like SCOM (System Center Operations Manager), Nagios, Zabbix, or Azure Monitor for cloud infrastructure. Alerts are notifications triggered when a metric crosses a threshold — for example, alerting when disk space falls below 10%. A well-configured alerting system gives the SysAdmin time to act before a server runs out of disk space, a service crashes, or a performance issue affects users.",
+          "The first week is your longest-lasting first impression. Priority actions: introduce yourself proactively to every team member and key stakeholder; understand the ticketing system, escalation paths, and team processes before trying to improve them; ask your manager for a 30/60/90-day plan to align expectations; shadow senior team members to learn unwritten practices; take detailed notes — this becomes your personal knowledge base. Professional behaviours: arrive 5 minutes early, meet deadlines even on small tasks, ask clarifying questions rather than guessing, and acknowledge mistakes immediately if they happen. The first week sets the tone for how your team perceives your reliability and professionalism throughout your tenure.",
       },
     ],
   },

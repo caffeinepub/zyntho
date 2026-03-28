@@ -12,7 +12,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle, Clock, RefreshCw, Shield, XCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
-import { useActor } from "../hooks/useActor";
+import { createActorWithConfig } from "../config";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
 
 type StatusKind = "Approved" | "Pending" | "Rejected";
 
@@ -44,9 +45,37 @@ const STATUS_ORDER: Record<StatusKind, number> = {
   Rejected: 2,
 };
 
+function getAdminToken(): string {
+  try {
+    return (
+      new URLSearchParams(window.location.hash.slice(1)).get("adminToken") ?? ""
+    );
+  } catch {
+    return "";
+  }
+}
+
 export default function AdminDashboard() {
-  const { actor } = useActor();
+  const { identity } = useInternetIdentity();
   const queryClient = useQueryClient();
+
+  // Create a dedicated admin actor (with identity, no re-initialization needed
+  // since useAuth already called _initializeAccessControlWithSecret on login)
+  const { data: actor } = useQuery({
+    queryKey: ["adminActor", identity?.getPrincipal().toString()],
+    queryFn: async () => {
+      if (!identity) throw new Error("No identity");
+      const actor = await createActorWithConfig({ agentOptions: { identity } });
+      // Only call init if admin token is present (already done by useAuth, but safe to repeat)
+      const adminToken = getAdminToken();
+      if (adminToken) {
+        await (actor as any)._initializeAccessControlWithSecret(adminToken);
+      }
+      return actor;
+    },
+    enabled: !!identity,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
 
   const { data: rawApprovals = [], isLoading } = useQuery({
     queryKey: ["adminApprovals"],
